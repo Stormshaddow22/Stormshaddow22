@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #qrcode {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>QR Code Generator</h1>
+    <input type="text" id="urlInput" placeholder="Enter URL" style="width: 300px; padding: 10px;">
+    <button onclick="generateQRCode()">Generate QR Code</button>
+    <div id="qrcode"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        function generateQRCode() {
+            var url = document.getElementById("urlInput").value;
+            if (url) {
+                document.getElementById("qrcode").innerHTML = "";
+                new QRCode(document.getElementById("qrcode"), {
+                    text: url,
+                    width: 128,
+                    height: 128
+                });
+            } else {
+                alert("Please enter a URL");
+            }
+        }
+
+        // Auto-generate QR code for a specific URL on page load
+        window.onload = function() {
+            var defaultUrl = "www.foodhub.com";
+            document.getElementById("urlInput").value = defaultUrl;
+            generateQRCode();
+        };
+    </script>
+</body>
+</html>
+
