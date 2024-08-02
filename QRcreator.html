@@ -17,36 +17,96 @@
         #qrcode {
             margin-top: 20px;
         }
+        #downloadButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .color-input {
+            margin: 5px;
+        }
+        #qrcode img {
+            border-style: double; /* Creates a double border */
+            border-width: 10px; /* Adjust to your liking (double the width) */
+            border-radius: 20px; /* Default rounded corners */
+        }
     </style>
 </head>
 <body>
-    <h1>QR Code Generator</h1>
+    <h1>Melroy's QR Code Generator</h1>
     <input type="text" id="urlInput" placeholder="Enter URL" style="width: 300px; padding: 10px;">
+    <div class="color-input">
+        <label for="foregroundColor">Foreground Color: </label>
+        <input type="color" id="foregroundColor" value="#000000">
+    </div>
+    <div class="color-input">
+        <label for="backgroundColor">Background Color: </label>
+        <input type="color" id="backgroundColor" value="#ffffff">
+    </div>
+    <div class="color-input">
+        <label for="borderColor">Border Color: </label>
+        <input type="color" id="borderColor" value="#000000">
+    </div>
+    <div class="color-input">
+        <label for="borderWidth">Border Width (px): </label>
+        <input type="number" id="borderWidth" value="10" min="0">
+    </div>
+    <div class="color-input">
+        <label for="borderRadius">Border Radius (px): </label>
+        <input type="number" id="borderRadius" value="20" min="0">
+    </div>
     <button onclick="generateQRCode()">Generate QR Code</button>
     <div id="qrcode"></div>
+    <button id="downloadButton" style="display: none;" onclick="downloadQRCode()">Download QR Code</button>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         function generateQRCode() {
             var url = document.getElementById("urlInput").value;
+            var foregroundColor = document.getElementById("foregroundColor").value;
+            var backgroundColor = document.getElementById("backgroundColor").value;
+            var borderColor = document.getElementById("borderColor").value;
+            var borderWidth = document.getElementById("borderWidth").value;
+            var borderRadius = document.getElementById("borderRadius").value;
+
             if (url) {
                 document.getElementById("qrcode").innerHTML = "";
-                new QRCode(document.getElementById("qrcode"), {
+                var qrCode = new QRCode(document.getElementById("qrcode"), {
                     text: url,
                     width: 128,
-                    height: 128
+                    height: 128,
+                    colorDark: foregroundColor,
+                    colorLight: backgroundColor,
+                    correctLevel: QRCode.CorrectLevel.H
                 });
+
+                // Apply border customizations
+                var qrElement = document.getElementById("qrcode").getElementsByTagName("img")[0];
+                qrElement.style.borderColor = borderColor;
+                qrElement.style.borderWidth = borderWidth + "px"; // Apply border-width
+                qrElement.style.borderRadius = borderRadius + "px"; // Apply border-radius
+
+                // Show the download button
+                document.getElementById("downloadButton").style.display = "block";
             } else {
                 alert("Please enter a URL");
             }
         }
 
+        function downloadQRCode() {
+            var qrElement = document.getElementById("qrcode").getElementsByTagName("img")[0];
+            var qrURL = qrElement.src;
+            var downloadLink = document.createElement("a");
+            downloadLink.href = qrURL;
+            downloadLink.download = "qr_code.png";
+            downloadLink.click();
+        }
+
         // Auto-generate QR code for a specific URL on page load
         window.onload = function() {
-            var defaultUrl = "www.foodhub.com";
+            var defaultUrl = "WWW.foodhub.com";
             document.getElementById("urlInput").value = defaultUrl;
             generateQRCode();
         };
     </script>
 </body>
 </html>
-
