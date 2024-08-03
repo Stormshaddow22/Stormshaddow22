@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Incentive Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(0deg, #ff9a9e 0%, #fad0c4 100%);
+            animation: gradientBackground 10s ease infinite;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBackground {
+            0% { background: linear-gradient(0deg, #ff9a9e 0%, #fad0c4 100%); }
+            50% { background: linear-gradient(0deg, #a18cd1 0%, #fbc2eb 100%); }
+            100% { background: linear-gradient(0deg, #ff9a9e 0%, #fad0c4 100%); }
+        }
+
+        .container {
+            display: flex;
+            width: 80%;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .input-group {
+            margin: 10px 0;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        input[type="number"] {
+            width: 100px;
+            padding: 5px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .criteria {
+            margin-bottom: 20px;
+            width: 45%;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .criteria h2 {
+            margin: 0;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+
+        .criteria table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .criteria th, .criteria td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #4CAF50;
+        }
+
+        .criteria th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .criteria tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .criteria tr:nth-child(odd) {
+            background-color: #e6ffe6;
+        }
+
+        .calculator {
+            width: 45%;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .confetti, .sad-emoji-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            display: none;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .popup h2 {
+            margin: 0;
+            color: #4CAF50;
+        }
+
+        .popup p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .popup button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .popup button:hover {
+            background-color: #45a049;
+        }
+
+        .emoji {
+            position: absolute;
+            font-size: 24px;
+            animation: fall 5s linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px); }
+            100% { transform: translateY(calc(100vh + 100px)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="criteria">
+            <h2>Incentive Criteria</h2>
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Percentage</th>
+                    <th>Payout</th>
+                </tr>
+                <tr>
+                    <td rowspan="3">Cast</td>
+                    <td>≥ 95%</td>
+                    <td>£22.50</td>
+                </tr>
+                <tr>
+                    <td>≥ 86%</td>
+                    <td>£15.00</td>
+                </tr>
+                <tr>
+                    <td>≥ 85%</td>
+                    <td>£7.50</td>
+                </tr>
+                <tr>
+                    <td rowspan="3">FCR</td>
+                    <td>≥ 80%</td>
+                    <td>£15.00</td>
+                </tr>
+                <tr>
+                    <td>≥ 77%</td>
+                    <td>£10.00</td>
+                </tr>
+                <tr>
+                    <td>≥ 75%</td>
+                    <td>£5.00</td>
+                </tr>
+                <tr>
+                    <td rowspan="3">Genii</td>
+                    <td>≥ 96%</td>
+                    <td>£22.50</td>
+                </tr>
+                <tr>
+                    <td>≥ 95%</td>
+                    <td>£15.00</td>
+                </tr>
+                <tr>
+                    <td>≥ 90%</td>
+                    <td>£7.50</td>
+                </tr>
+                <tr>
+                    <td>Adherence</td>
+                    <td>≤ 11%</td>
+                    <td>£15.00</td>
+                </tr>
+                <tr>
+                    <td>PDQ</td>
+                    <td>Each</td>
+                    <td>£50.00</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="calculator">
+            <div class="input-group">
+                <label for="unplannedLeaves">Unplanned Leaves:</label>
+                <input type="number" id="unplannedLeaves" min="0" value="0">
+            </div>
+            <div class="input-group">
+                <label for="timesLate">Times Late:</label>
+                <input type="number" id="timesLate" min="0" value="0">
+            </div>
+            <div class="input-group">
+                <label for="castPercentage">Cast (%):</label>
+                <input type="number" id="castPercentage" min="0" max="100" value="0">
+            </div>
+            <div class="input-group">
+                <label for="fcrPercentage">FCR (%):</label>
+                <input type="number" id="fcrPercentage" min="0" max="100" value="0">
+            </div>
+            <div class="input-group">
+                <label for="geniiPercentage">Genii (%):</label>
+                <input type="number" id="geniiPercentage" min="0" max="100" value="0">
+            </div>
+            <div class="input-group">
+                <label for="adherencePercentage">Adherence (%):</label>
+                <input type="number" id="adherencePercentage" min="0" max="100" value="0">
+            </div>
+            <div class="input-group">
+                <label for="pdqCount">PDQ Count:</label>
+                <input type="number" id="pdqCount" min="0" value="0">
+            </div>
+            <button onclick="calculateIncentive()">Calculate Incentive</button>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <canvas class="confetti"></canvas>
+    <div class="sad-emoji-rain" id="sadEmojiRain"></div>
+
+    <div class="popup" id="popup">
+        <h2 id="popupTitle"></h2>
+        <p id="popupMessage"></p>
+        <button onclick="closePopup()">Close</button>
+    </div>
+
+    <script>
+        function calculateIncentive() {
+            var unplannedLeaves = parseInt(document.getElementById("unplannedLeaves").value);
+            var timesLate = parseInt(document.getElementById("timesLate").value);
+            var castPercentage = parseFloat(document.getElementById("castPercentage").value);
+            var fcrPercentage = parseFloat(document.getElementById("fcrPercentage").value);
+            var geniiPercentage = parseFloat(document.getElementById("geniiPercentage").value);
+            var adherencePercentage = parseFloat(document.getElementById("adherencePercentage").value);
+            var pdqCount = parseInt(document.getElementById("pdqCount").value);
+
+            var incentive = 0;
+
+            var castIncentive = 0;
+            var fcrIncentive = 0;
+            var geniiIncentive = 0;
+            var adherenceIncentive = 0;
+
+            if (unplannedLeaves > 2 || timesLate > 2) {
+                castIncentive = 0;
+                fcrIncentive = 0;
+                geniiIncentive = 0;
+                adherenceIncentive = 0;
+            } else {
+                // Cast incentive
+                if (castPercentage >= 95) {
+                    castIncentive = 22.5;
+                } else if (castPercentage >= 86) {
+                    castIncentive = 15;
+                } else if (castPercentage >= 85) {
+                    castIncentive = 7.5;
+                }
+
+                // FCR incentive
+                if (fcrPercentage >= 80) {
+                    fcrIncentive = 15;
+                } else if (fcrPercentage >= 77) {
+                    fcrIncentive = 10;
+                } else if (fcrPercentage >= 75) {
+                    fcrIncentive = 5;
+                }
+
+                // Genii incentive
+                if (geniiPercentage >= 96) {
+                    geniiIncentive = 22.5;
+                } else if (geniiPercentage >= 95) {
+                    geniiIncentive = 15;
+                } else if (geniiPercentage >= 90) {
+                    geniiIncentive = 7.5;
+                }
+
+                // Adherence incentive
+                if (adherencePercentage <= 11) {
+                    adherenceIncentive = 15;
+                }
+            }
+
+            // PDQ incentive
+            var pdqIncentive = pdqCount * 50;
+
+            incentive = castIncentive + fcrIncentive + geniiIncentive + adherenceIncentive + pdqIncentive;
+
+            document.getElementById("result").innerText = "Total Incentive: £" + incentive.toFixed(2);
+
+            showSpecialEffects(incentive);
+            showPopup(incentive);
+        }
+
+        function showConfetti() {
+            const confettiContainer = document.querySelector('.confetti');
+            confettiContainer.style.display = 'block';
+
+            const canvas = confettiContainer;
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+
+            class Confetti {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.size = Math.random() * 5 + 2;
+                    this.speedX = Math.random() * 3 - 1.5;
+                    this.speedY = Math.random() * 3 + 1;
+                    this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                }
+
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    this.speedY += 0.05;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+            }
+
+            function createConfetti() {
+                for (let i = 0; i < 200; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    particles.push(new Confetti(x, y));
+                }
+            }
+
+            function update() {
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    let particle = particles[i];
+                    particle.update();
+                    if (particle.y > canvas.height) {
+                        particles.splice(i, 1);
+                    }
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                for (let particle of particles) {
+                    particle.draw();
+                }
+
+                requestAnimationFrame(draw);
+            }
+
+            function loop() {
+                update();
+                draw();
+            }
+
+            createConfetti();
+            loop();
+
+            setTimeout(() => {
+                confettiContainer.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSadEmojiRain() {
+            const sadEmojiRainContainer = document.getElementById('sadEmojiRain');
+            sadEmojiRainContainer.style.display = 'block';
+            sadEmojiRainContainer.innerHTML = ''; // Clear any previous emojis
+
+            const emojiCount = 100;
+            for (let i = 0; i < emojiCount; i++) {
+                const emoji = document.createElement('div');
+                emoji.className = 'emoji';
+                emoji.style.left = `${Math.random() * 100}vw`;
+                emoji.style.top = `${Math.random() * 100}vh`;
+                emoji.innerText = '😢';
+                sadEmojiRainContainer.appendChild(emoji);
+            }
+        }
+
+        function showSpecialEffects(incentive) {
+            if (incentive > 0) {
+                showConfetti();
+            } else {
+                showSadEmojiRain();
+            }
+        }
+
+        function showPopup(incentive) {
+            const popup = document.getElementById("popup");
+            const popupTitle = document.getElementById("popupTitle");
+            const popupMessage = document.getElementById("popupMessage");
+            
+            if (incentive === 0) {
+                popupTitle.innerText = "Keep Trying!";
+                popupMessage.innerText = "Keep trying, you can do it!";
+            } else {
+                popupTitle.innerText = "Congratulations!";
+                popupMessage.innerText = `Total Incentive: £${incentive.toFixed(2)}`;
+            }
+
+            popup.style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = 'none';
+        }
+    </script>
+</body>
+</html>
+
