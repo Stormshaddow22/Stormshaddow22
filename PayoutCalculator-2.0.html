@@ -428,13 +428,13 @@
             sadEmojiRainContainer.style.display = 'block';
             sadEmojiRainContainer.innerHTML = ''; // Clear any previous emojis
 
-            const emojiCount = 100;
+            const emojiCount = 3;
             for (let i = 0; i < emojiCount; i++) {
                 const emoji = document.createElement('div');
                 emoji.className = 'emoji';
                 emoji.style.left = `${Math.random() * 100}vw`;
                 emoji.style.top = `${Math.random() * 100}vh`;
-                emoji.innerText = '😢';
+                emoji.innerText = '😢','😭';
                 sadEmojiRainContainer.appendChild(emoji);
             }
         }
