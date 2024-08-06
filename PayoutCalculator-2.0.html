@@ -186,7 +186,7 @@
                     <th>Payout</th>
                 </tr>
                 <tr>
-                    <td rowspan="3">Cast</td>
+                    <td rowspan="3">Csat</td>
                     <td>≥ 95%</td>
                     <td>£22.50</td>
                 </tr>
@@ -247,8 +247,8 @@
                 <input type="number" id="timesLate" min="0" value="0">
             </div>
             <div class="input-group">
-                <label for="castPercentage">Cast (%):</label>
-                <input type="number" id="castPercentage" min="0" max="100" value="0">
+                <label for="CsatPercentage">Csat (%):</label>
+                <input type="number" id="CsatPercentage" min="0" max="100" value="0">
             </div>
             <div class="input-group">
                 <label for="fcrPercentage">FCR (%):</label>
@@ -284,7 +284,7 @@
         function calculateIncentive() {
             var unplannedLeaves = parseInt(document.getElementById("unplannedLeaves").value);
             var timesLate = parseInt(document.getElementById("timesLate").value);
-            var castPercentage = parseFloat(document.getElementById("castPercentage").value);
+            var CsatPercentage = parseFloat(document.getElementById("CsatPercentage").value);
             var fcrPercentage = parseFloat(document.getElementById("fcrPercentage").value);
             var geniiPercentage = parseFloat(document.getElementById("geniiPercentage").value);
             var adherencePercentage = parseFloat(document.getElementById("adherencePercentage").value);
@@ -292,24 +292,24 @@
 
             var incentive = 0;
 
-            var castIncentive = 0;
+            var CsatIncentive = 0;
             var fcrIncentive = 0;
             var geniiIncentive = 0;
             var adherenceIncentive = 0;
 
             if (unplannedLeaves > 2 || timesLate > 2) {
-                castIncentive = 0;
+                CsatIncentive = 0;
                 fcrIncentive = 0;
                 geniiIncentive = 0;
                 adherenceIncentive = 0;
             } else {
-                // Cast incentive
-                if (castPercentage >= 95) {
-                    castIncentive = 22.5;
-                } else if (castPercentage >= 86) {
-                    castIncentive = 15;
-                } else if (castPercentage >= 85) {
-                    castIncentive = 7.5;
+                // Csat incentive
+                if (CsatPercentage >= 95) {
+                    CsatIncentive = 22.5;
+                } else if (CsatPercentage >= 86) {
+                    CsatIncentive = 15;
+                } else if (CsatPercentage >= 85) {
+                    CsatIncentive = 7.5;
                 }
 
                 // FCR incentive
@@ -339,7 +339,7 @@
             // PDQ incentive
             var pdqIncentive = pdqCount * 50;
 
-            incentive = castIncentive + fcrIncentive + geniiIncentive + adherenceIncentive + pdqIncentive;
+            incentive = CsatIncentive + fcrIncentive + geniiIncentive + adherenceIncentive + pdqIncentive;
 
             document.getElementById("result").innerText = "Total Incentive: £" + incentive.toFixed(2);
 
