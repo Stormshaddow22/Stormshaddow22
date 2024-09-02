@@ -239,7 +239,7 @@
 
         <div class="calculator">
             <div class="input-group">
-                <label for="unplannedLeaves">Unplanned Leaves:</label>
+                <label for="unplannedLeaves">Unplanned Leave Days:</label>
                 <input type="number" id="unplannedLeaves" min="0" value="0">
             </div>
             <div class="input-group">
@@ -297,7 +297,7 @@
             var geniiIncentive = 0;
             var adherenceIncentive = 0;
 
-            if (unplannedLeaves > 2 || timesLate > 2) {
+            if (unplannedLeaves > 1 || timesLate > 1) {
                 CsatIncentive = 0;
                 fcrIncentive = 0;
                 geniiIncentive = 0;
