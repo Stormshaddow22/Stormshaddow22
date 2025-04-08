@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place ID Finder</title>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <script type="module" src="./index.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        /* Reduced the map width */
+        #map {
+            height: 300px; /* Smaller map height */
+            width: 80%; /* Reduced map width */
+            margin-bottom: 20px;
+        }
+
+        /* Increased the size of the search bar and font */
+        .controls {
+            font-size: 18px; /* Larger font size */
+            width: 80%; /* Make the search bar wider */
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        #infowindow-content {
+            margin-bottom: 20px;
+        }
+
+        #qrCode {
+            margin-top: 20px;
+            padding: 10px; /* Reduced padding */
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            display: inline-block;
+            text-align: center;
+            margin-bottom: 20px; /* Space below QR code */
+        }
+
+        /* Style for buttons */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px; /* Space between buttons */
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #qrCodeSection {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div style="display: none">
+        <input
+            id="pac-input"
+            class="controls"
+            type="text"
+            placeholder="Enter a location"
+        />
+    </div>
+
+    <div id="map"></div>
+
+    <div id="infowindow-content">
+        <span id="place-name" class="title"></span><br />
+        <strong>Place ID:</strong> <span id="place-id"></span><br />
+        <span id="place-address"></span><br />
+    </div>
+
+    <!-- Review Link Section -->
+    <div id="qrCodeSection">
+        <p id="reviewLinkText"></p>
+        <!-- Generate QR Code and Download Buttons -->
+        <div class="button-container">
+            <button onclick="generateQRCode()">Generate Review QR Code</button>
+            <button onclick="downloadQRCode()">Download QR Code</button>
+        </div>
+        <div id="qrCode"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> <!-- Added jQuery -->
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script> <!-- Added QRCode library -->
+
+    <script>
+        let map, service, infowindow, marker;
+
+        // Initialize the Google Map and the Places service
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: -33.8688, lng: 151.2195},  // Set initial center to Sydney
+                zoom: 13
+            });
+
+            const input = document.getElementById('pac-input');
+            const autocomplete = new google.maps.places.Autocomplete(input, {
+                fields: ['place_id', 'geometry', 'name', 'formatted_address']
+            });
+
+            autocomplete.bindTo('bounds', map);
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+            infowindow = new google.maps.InfoWindow();
+            const infowindowContent = document.getElementById('infowindow-content');
+            infowindow.setContent(infowindowContent);
+
+            marker = new google.maps.Marker({ map: map });
+            marker.addListener('click', () => {
+                infowindow.open(map, marker);
+            });
+
+            autocomplete.addListener('place_changed', () => {
+                infowindow.close();
+
+                const place = autocomplete.getPlace();
+                if (!place.geometry || !place.geometry.location) {
+                    alert("No details available for input: " + place.name);
+                    return;
+                }
+
+                // If the place has a viewport, fit the map to it; otherwise, set the map center and zoom level
+                if (place.geometry.viewport) {
+                    map.fitBounds(place.geometry.viewport);
+                } else {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);
+                }
+
+                // Set the position of the marker using the place ID and location
+                marker.setPlace({
+                    placeId: place.place_id,
+                    location: place.geometry.location
+                });
+                marker.setVisible(true);
+
+                document.getElementById('place-name').textContent = place.name;
+                document.getElementById('place-id').textContent = place.place_id;
+                document.getElementById('place-address').textContent = place.formatted_address;
+
+                // Show review link and QR code section
+                document.getElementById('qrCodeSection').style.display = 'block';
+
+                infowindow.open(map, marker);
+            });
+        }
+
+        // Function to generate the review QR code using the place ID
+        function generateQRCode() {
+            const placeId = document.getElementById('place-id').textContent;
+            if (!placeId) {
+                alert('Please select a business on the map first.');
+                return;
+            }
+
+            // Construct the review URL
+            const reviewLink = `https://search.google.com/local/writereview?placeid=${placeId}`;
+
+            // Display the review link
+            document.getElementById('reviewLinkText').innerHTML = `Review link: <a href="${reviewLink}" target="_blank">${reviewLink}</a>`;
+
+            // Generate the QR code for the review link
+            document.getElementById('qrCode').innerHTML = '';  // Clear the previous QR code
+            new QRCode(document.getElementById('qrCode'), reviewLink);  // Generate new QR code
+        }
+
+        // Function to download the QR Code as a JPG with a rounded border
+        function downloadQRCode() {
+            const qrCodeCanvas = document.querySelector('#qrCode canvas');
+            if (!qrCodeCanvas) {
+                alert('Please generate the QR code first!');
+                return;
+            }
+
+            // Create a new canvas with rounded corners for the border
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            // Set the canvas size to the QR code size plus border
+            const borderSize = 20;
+            canvas.width = qrCodeCanvas.width + borderSize * 2;
+            canvas.height = qrCodeCanvas.height + borderSize * 2;
+
+            // Draw the rounded border
+            context.fillStyle = '#fff';
+            const borderRadius = 20; // Set border radius for rounded corners
+            context.beginPath();
+            context.moveTo(borderRadius, 0);
+            context.lineTo(canvas.width - borderRadius, 0);
+            context.quadraticCurveTo(canvas.width, 0, canvas.width, borderRadius);
+            context.lineTo(canvas.width, canvas.height - borderRadius);
+            context.quadraticCurveTo(canvas.width, canvas.height, canvas.width - borderRadius, canvas.height);
+            context.lineTo(borderRadius, canvas.height);
+            context.quadraticCurveTo(0, canvas.height, 0, canvas.height - borderRadius);
+            context.lineTo(0, borderRadius);
+            context.quadraticCurveTo(0, 0, borderRadius, 0);
+            context.closePath();
+            context.fill();
+
+            // Draw the QR code inside the rounded border
+            context.drawImage(qrCodeCanvas, borderSize, borderSize);
+
+            // Convert the canvas to an image and download it
+            const qrCodeImage = canvas.toDataURL('image/jpeg');
+            const link = document.createElement('a');
+            link.href = qrCodeImage;
+            link.download = 'qr_code_with_rounded_border.jpg';
+            link.click();
+        }
+
+        window.initMap = initMap;  // Set the function as the callback for the Google Maps API
+    </script>
+
+    <!-- Include Google Maps API -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&libraries=places&v=weekly"
+      defer
+    ></script>
+</body>
+</html>
+
