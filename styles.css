@@ -1,0 +1,44 @@
+/* Menu container */
+.menu-container {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+/* Menu button (☰) */
+.menu-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    font-size: 24px;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Dropdown menu */
+.dropdown-content {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    min-width: 150px;
+    display: none;
+}
+
+/* Dropdown menu links */
+.dropdown-content a {
+    display: block;
+    padding: 10px;
+    color: black;
+    text-decoration: none;
+}
+
+/* Hover effect */
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
