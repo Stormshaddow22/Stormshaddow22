@@ -1,0 +1,116 @@
+<script src="index.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoho Sheets Layout</title>
+    <style>
+        /* Set full-page black background */
+        body {
+            background-color: #000; /* Absolute black */
+            color: white; /* White text for visibility */
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 4vw; /* Adjusts with screen size */
+            font-weight: bold;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .top-iframe {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .bottom-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px; /* Space between tables */
+            width: 100%;
+            flex-wrap: wrap; /* Makes it responsive */
+        }
+
+        /* Make iframes bigger but still side by side */
+        .iframe-container {
+            width: 50vw; /* Each table takes ~45% of screen width */
+            max-width: 570px;
+            height: 300px;
+            overflow: hidden; /* Hide scrollbars */
+            position: relative;
+        }
+
+        .iframe-container iframe {
+            width: 123%; /* Slight zoom */
+            height: 123%;
+            transform: scale(1.1); /* Zoom to 1.2x */
+            transform-origin: top left;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Adjust the small top iframe separately */
+        .top-iframe iframe {
+            width: 15.5vw; /* Slightly wider */
+            max-width: 500px;
+            height: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .bottom-container {
+                flex-direction: column; /* Stack if screen is small */
+            }
+            .iframe-container {
+                width: 100vw; /* Full width on small screens */
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1><U>CS UK MTD STATS</U></h1>
+
+    <div class="container">
+
+        <!-- Right iframe (should be on top) -->
+        <div class="top-iframe">
+            <iframe frameborder="0" scrolling="No" 
+                    src="https://sheet.zohopublic.com/sheet/publishedrange/90b423553e65baf9f4c9137611216361559737dd2d77cfc09de294b3465364b9?type=grid&mode=embed">
+            </iframe>
+        </div>
+
+        <!-- Left & Top iframes (side by side) -->
+        <div class="bottom-container">
+            <div class="iframe-container">
+                <iframe frameborder="0" scrolling="no" 
+                        src="https://sheet.zohopublic.com/sheet/publishedrange/5245d9f2cdc3b76952b61efbc727ff7cfb258167785d382194478317b522c152?type=grid&mode=embed">
+                </iframe>
+            </div>
+
+            <div class="iframe-container">
+                <iframe frameborder="0" scrolling="no" 
+                        src="https://sheet.zohopublic.com/sheet/publishedrange/77e634e3abecb1175b21d73673e504da1df2054d3f626efc5208bcf8872c7176?type=grid&mode=embed">
+                </iframe>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
