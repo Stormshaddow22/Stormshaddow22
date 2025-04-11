@@ -46,8 +46,8 @@
 
         /* Make iframes bigger but still side by side */
         .iframe-container {
-            width: 50vw; /* Each table takes ~45% of screen width */
-            max-width: 570px;
+            width: 30vw; /* Each table takes ~45% of screen width */
+            max-width: 565px;
             height: 300px;
             overflow: hidden; /* Hide scrollbars */
             position: relative;
@@ -67,7 +67,7 @@
         .top-iframe iframe {
             width: 15.5vw; /* Slightly wider */
             max-width: 500px;
-            height: 40px;
+            height: 2.1vw;
         }
 
         @media (max-width: 900px) {
@@ -89,9 +89,7 @@
 
         <!-- Right iframe (should be on top) -->
         <div class="top-iframe">
-            <iframe frameborder="0" scrolling="No" 
-                    src="https://sheet.zohopublic.com/sheet/publishedrange/90b423553e65baf9f4c9137611216361559737dd2d77cfc09de294b3465364b9?type=grid&mode=embed">
-            </iframe>
+            <iframe width="287" height="30" style="border:1px solid #ccc" frameborder="0" scrolling="no" src="https://sheet.zohopublic.com/sheet/publishedrange/e3c7bfd87d6f5cb7ea6eeeb6b6d5d11f325501081d96fe9218444cf4bd179aad?type=grid&mode=embed"></iframe>
         </div>
 
         <!-- Left & Top iframes (side by side) -->
@@ -113,4 +111,3 @@
 
 </body>
 </html>
-
