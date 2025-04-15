@@ -1,0 +1,331 @@
+<script src="index.js" defer></script>
+<link rel="stylesheet" href="styles.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Calculators</title>
+  <style>
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      padding: 5vh 5vw;
+      background: linear-gradient(to right, #141E30, #243B55);
+      color: #FFF;
+      flex-wrap: wrap;
+    }
+
+    .calculator, .device-upgrade, .dman-calculator {
+      width: 360px;
+      background: #1e1e1e;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+
+    .header {
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      padding: 12px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .survey-section, .device-section, .calculator-section {
+      background-color: #282828;
+      padding: 15px;
+    }
+
+    .input-container, .form-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .input-wrapper {
+      flex: 1 1 48%;
+      text-align: center;
+    }
+
+    .input-wrapper label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="number"], select {
+      text-align: center;
+      font-size: 16px;
+      background: #3C3C3C;
+      color: #FFF;
+      border: none;
+      border-radius: 5px;
+      padding: 6px;
+      width: 100%;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .csat-result, .required-result {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .csat-result {
+      font-size: 24px;
+      color: #4CAF50;
+      font-weight: bold;
+    }
+
+    .required-result {
+      font-size: 18px;
+      color: #FFD700;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      background: #1e1e1e;
+      color: #FFF;
+    }
+
+    th, td {
+      border: 1px solid #4CAF50;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4CAF50;
+    }
+
+    .footer-note {
+      font-size: 12px;
+      color: #ccc;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CSAT Calculator -->
+  <div class="calculator">
+    <div class="header">CSAT Calculator</div>
+    <div class="survey-section">
+      <div class="input-container">
+        <div class="input-wrapper">
+          <label for="positive">Positive Surveys (4 & 5):</label>
+          <input type="number" id="positive" value="0">
+        </div>
+        <div class="input-wrapper">
+          <label for="negative">Negative Surveys (1 to 3):</label>
+          <input type="number" id="negative" value="0">
+        </div>
+      </div>
+      <div class="csat-result" id="csatScore">80%</div>
+      <div class="required-result" id="requiredPositives">Required Positives: 0</div>
+    </div>
+  </div>
+
+  <!-- Device Upgrade Calculator -->
+  <div class="device-upgrade">
+    <div class="header">Device Upgrade Calculator</div>
+    <div class="device-section">
+      <div class="input-container">
+        <div class="input-wrapper">
+          <label for="fh">FH Setup (£):</label>
+          <input type="number" id="fh" placeholder="e.g. 100">
+        </div>
+        <div class="input-wrapper">
+          <label for="dman">DMan Setup (£):</label>
+          <input type="number" id="dman" value="150">
+        </div>
+      </div>
+      <div class="input-wrapper" style="margin-top: 15px; width: 100%;">
+        <label for="device">Select Device:</label>
+        <select id="device">
+          <option value="a920">A920</option>
+          <option value="fullepos">Full Epos</option>
+        </select>
+      </div>
+      <button onclick="calculateDevice()">Calculate</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>FH (£)</th>
+            <th>DMan (£)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>New Setup</td>
+            <td id="newSetupFH">0.00</td>
+            <td id="newSetupDMan">0.00</td>
+          </tr>
+          <tr>
+            <td>New Rental</td>
+            <td id="newRentalFH">0.00</td>
+            <td id="newRentalDMan">0.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DMan Calculator -->
+  <div class="dman-calculator calculator">
+    <div class="header">DMan Calculator</div>
+    <div class="calculator-section">
+      <div class="form-group">
+        <div class="input-wrapper">
+          <label for="orders">No of Orders:</label>
+          <input type="number" id="orders" placeholder="e.g. 50">
+        </div>
+        <div class="input-wrapper">
+          <label for="totalValue">Total Value (£):</label>
+          <input type="number" id="totalValue" placeholder="e.g. 1000">
+        </div>
+        <div class="input-wrapper">
+          <label for="rent">DMan Rent (£):</label>
+          <input type="number" id="rent" placeholder="e.g. 25">
+        </div>
+        <div class="input-wrapper">
+          <label for="weeks">Weeks:</label>
+          <input type="number" id="weeks" placeholder="e.g. 4">
+        </div>
+        <div class="input-wrapper">
+          <label for="delivery">No. of Deliveries:</label>
+          <input type="number" id="delivery" placeholder="e.g. 30">
+        </div>
+      </div>
+      <button onclick="calculateDMan()">Calculate</button>
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Amount (£)</th>
+          </tr>
+        </thead>
+        <tbody id="results"></tbody>
+      </table>
+      <div class="footer-note">
+        <strong>Note:</strong> Delivery charge shown here is £3.00 per order. The value customers pay may differ.<br>
+        <strong>Note:</strong> Payout is as close as possible.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Auto-remove leading zeros
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+      input.addEventListener('input', () => {
+        if (input.value.length > 1 && input.value.startsWith('0')) {
+          input.value = input.value.replace(/^0+/, '');
+        }
+      });
+    });
+
+    // CSAT Calculator
+    function updateCalculations() {
+      const pos = parseInt(document.getElementById('positive').value) || 0;
+      const neg = parseInt(document.getElementById('negative').value) || 0;
+      const total = pos + neg;
+      const csat = total > 0 ? (pos / total * 100).toFixed(1) : '0';
+      document.getElementById('csatScore').textContent = `${csat}%`;
+      const required = Math.max(0, Math.ceil((7 * neg) - pos));
+      document.getElementById('requiredPositives').innerHTML = `Required to reach 87.5%:<br><span style="font-size: 26px; color: #ffffff;">${required}</span>`;
+    }
+    document.getElementById('positive').addEventListener('input', updateCalculations);
+    document.getElementById('negative').addEventListener('input', updateCalculations);
+    updateCalculations();
+
+    // Device Upgrade Logic
+    const deviceData = {
+      a920: { setup: { fh: 99, dman: 150 }, rental: { fh: 7, dman: 18 } },
+      fullepos: { setup: { fh: 125, dman: 300 }, rental: { fh: 12, dman: 23 } }
+    };
+
+    function calculateDevice() {
+      const fhInput = parseFloat(document.getElementById('fh').value);
+      const dmanInput = parseFloat(document.getElementById('dman').value);
+      const selectedDevice = document.getElementById('device').value;
+
+      if (!isNaN(fhInput) && !isNaN(dmanInput)) {
+        const newSetupFH = Math.max(deviceData[selectedDevice].setup.fh - fhInput, 0);
+        const newSetupDMan = Math.max(deviceData[selectedDevice].setup.dman - dmanInput, 0);
+        const newRentalFH = deviceData[selectedDevice].rental.fh;
+        const newRentalDMan = deviceData[selectedDevice].rental.dman;
+
+        document.getElementById('newSetupFH').innerText = newSetupFH.toFixed(2);
+        document.getElementById('newSetupDMan').innerText = newSetupDMan.toFixed(2);
+        document.getElementById('newRentalFH').innerText = newRentalFH.toFixed(2);
+        document.getElementById('newRentalDMan').innerText = newRentalDMan.toFixed(2);
+      } else {
+        alert("Please enter valid FH and DMan values.");
+      }
+    }
+
+    // DMan Calculator Logic
+    function calculateDMan() {
+      const orders = parseFloat(document.getElementById('orders').value) || 0;
+      const totalValue = parseFloat(document.getElementById('totalValue').value) || 0;
+      const rent = parseFloat(document.getElementById('rent').value) || 0;
+      const weeks = parseFloat(document.getElementById('weeks').value) || 0;
+      const delivery = parseFloat(document.getElementById('delivery').value) || 0;
+
+      const transactionChargePercent = totalValue * 0.034;
+      const transactionChargeFlat = orders * 0.20;
+      const totalTransactionCharge = transactionChargePercent + transactionChargeFlat;
+
+      const deliveryDeduction = delivery * 3;
+      const totalRent = rent * weeks;
+      const totalCharge = totalTransactionCharge + deliveryDeduction + totalRent;
+      const totalWithdrawable = totalValue - totalCharge;
+
+      document.getElementById('results').innerHTML = `
+        <tr><td>3.4% Transaction Fee</td><td>£${transactionChargePercent.toFixed(2)}</td></tr>
+        <tr><td>£0.20 per Order</td><td>£${transactionChargeFlat.toFixed(2)}</td></tr>
+        <tr><td>Delivery Deduction (£3/order)</td><td>£${deliveryDeduction.toFixed(2)}</td></tr>
+        <tr><td>DMan Rent x Weeks</td><td>£${totalRent.toFixed(2)}</td></tr>
+        <tr><th>Total Charge</th><th>£${totalCharge.toFixed(2)}</th></tr>
+        <tr><th>Total Withdrawable</th><th>£${totalWithdrawable.toFixed(2)}</th></tr>
+      `;
+    }
+  </script>
+</body>
+</html>
+
