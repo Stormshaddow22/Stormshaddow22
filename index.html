@@ -7,13 +7,13 @@
 
     // Already verified?
     if (localStorage.getItem("authenticated") === "true") {
-      window.location.href = "index.html"; // or wherever you want to go next
+      window.location.href = "QRcreator.html"; // or wherever you want to go next
     } else {
       const password = prompt("Enter password to continue:");
 
       if (password === correctPassword) {
         localStorage.setItem("authenticated", "true");
-        window.location.href = "index.html"; // Redirect to protected page
+        window.location.href = "QRcreator.html"; // Redirect to protected page
       } else {
         document.write("<h1>Access Denied</h1>");
       }
