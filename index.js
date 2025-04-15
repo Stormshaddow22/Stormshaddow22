@@ -1,5 +1,5 @@
 const pages = [
-    { name: "Home", url: "https://stormshaddow22.github.io/Stormshaddow22/" },
+    { name: "Home", url: "https://stormshaddow22.github.io/Stormshaddow22/index.html" },
     { name: "Google QR", url: "https://stormshaddow22.github.io/Stormshaddow22/Buisness%20review%20QR%20generator.html" },
     { name: "QRcreator", url: "https://stormshaddow22.github.io/Stormshaddow22/QRcreator.html" },
     { name: "All Calc", url: "https://stormshaddow22.github.io/Stormshaddow22/Allcalc2.0.html" },
