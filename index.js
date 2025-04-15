@@ -6,7 +6,10 @@ const pages = [
     { name: "Call Que 1", url: "https://stormshaddow22.github.io/Stormshaddow22/Call%20Ques.html" },
     { name: "Call Que 2", url: "https://stormshaddow22.github.io/Stormshaddow22/screen.html" },
     { name: "CSUK MTD", url: "https://stormshaddow22.github.io/Stormshaddow22/CSUKMTDSTATS.html" },
-    { name: "Incentive Calc", url: "https://stormshaddow22.github.io/Stormshaddow22/PayoutCalculator-2.0.html" }
+    { name: "Incentive Calc", url: "https://stormshaddow22.github.io/Stormshaddow22/PayoutCalculator-2.0.html" },
+    { name: "Logout", <button onclick="localStorage.removeItem('authenticated'); location.href='index.html';">
+  Logout
+</button> }
 ];
 
 // Create menu dynamically
