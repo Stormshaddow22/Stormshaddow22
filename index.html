@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome</title>
+  <script>
+    const correctPassword = "6800";
+
+    // Already verified?
+    if (localStorage.getItem("authenticated") === "true") {
+      window.location.href = "main.html"; // or wherever you want to go next
+    } else {
+      const password = prompt("Enter password to continue:");
+
+      if (password === correctPassword) {
+        localStorage.setItem("authenticated", "true");
+        window.location.href = "main.html"; // Redirect to protected page
+      } else {
+        document.write("<h1>Access Denied</h1>");
+      }
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>
+
