@@ -2,6 +2,7 @@ const pages = [
     { name: "Home", url: "https://stormshaddow22.github.io/Stormshaddow22/" },
     { name: "Google QR", url: "https://stormshaddow22.github.io/Stormshaddow22/Buisness%20review%20QR%20generator.html" },
     { name: "QRcreator", url: "https://stormshaddow22.github.io/Stormshaddow22/QRcreator.html" },
+    { name: "All Calc", url: "https://stormshaddow22.github.io/Stormshaddow22/Allcalc2.0.html" },
     { name: "Call Que 1", url: "https://stormshaddow22.github.io/Stormshaddow22/Call%20Ques.html" },
     { name: "Call Que 2", url: "https://stormshaddow22.github.io/Stormshaddow22/screen.html" },
     { name: "CSUK MTD", url: "https://stormshaddow22.github.io/Stormshaddow22/CSUKMTDSTATS.html" },
