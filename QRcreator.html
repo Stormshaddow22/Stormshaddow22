@@ -1,125 +1,212 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Protected Page</title>
-  <script>
-    if (localStorage.getItem("authenticated") !== "true") {
-      window.location.href = "index.html"; // send them back to login
-    }
-  </script>
-</head>
-</html>
-<script src="index.js" defer></script>
-<link rel="stylesheet" href="styles.css">
-<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        #qrcode {
-            margin-top: 20px;
-        }
-        #downloadButton {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-        .color-input {
-            margin: 5px;
-        }
-        #qrcode img {
-            border-style: double; /* Creates a double border */
-            border-width: 10px; /* Adjust to your liking (double the width) */
-            border-radius: 20px; /* Default rounded corners */
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Melroy's QR Code Generator</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="index.js" defer></script>
+  <script>
+    if (localStorage.getItem("authenticated") !== "true") {
+      window.location.href = "index.html";
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: linear-gradient(to right, #141E30, #243B55);
+      color: #FFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 5vh 2vw;
+    }
+
+    .qr-container {
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .qr-container h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: #4CAF50;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .input-group label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .input-group input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background: #3C3C3C;
+      color: #FFF;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      justify-content: space-between;
+    }
+
+    .row .input-group {
+      flex: 1;
+    }
+
+    .input-group input[type="color"],
+    .input-group input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      background: #3C3C3C;
+      color: #FFF;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #qrcode {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    #qrcode img {
+      border-style: double;
+      border-width: 10px;
+      border-radius: 20px;
+    }
+  </style>
 </head>
 <body>
+  <div class="qr-container">
     <h1>Melroy's QR Code Generator</h1>
-    <input type="text" id="urlInput" placeholder="Enter URL" style="width: 300px; padding: 10px;">
-    <div class="color-input">
-        <label for="foregroundColor">Foreground Color: </label>
-        <input type="color" id="foregroundColor" value="#000000">
+
+    <div class="input-group">
+      <label for="urlInput">Enter URL:</label>
+      <input type="text" id="urlInput" placeholder="https://example.com" />
     </div>
-    <div class="color-input">
-        <label for="backgroundColor">Background Color: </label>
-        <input type="color" id="backgroundColor" value="#ffffff">
+
+    <div class="row">
+      <div class="input-group">
+        <label for="foregroundColor">Foreground Color:</label>
+        <input type="color" id="foregroundColor" value="#000000" />
+      </div>
+      <div class="input-group">
+        <label for="backgroundColor">Background Color:</label>
+        <input type="color" id="backgroundColor" value="#ffffff" />
+      </div>
+      <div class="input-group">
+        <label for="borderColor">Border Color:</label>
+        <input type="color" id="borderColor" value="#000000" />
+      </div>
     </div>
-    <div class="color-input">
-        <label for="borderColor">Border Color: </label>
-        <input type="color" id="borderColor" value="#000000">
+
+    <div class="row" style="gap: 25px;">
+      <div class="input-group">
+        <label for="borderWidth">Border Width (px):</label>
+        <input type="number" id="borderWidth" value="10" min="0" />
+      </div>
+      <div class="input-group">
+        <label for="borderRadius">Border Radius (px):</label>
+        <input type="number" id="borderRadius" value="20" min="0" />
+      </div>
     </div>
-    <div class="color-input">
-        <label for="borderWidth">Border Width (px): </label>
-        <input type="number" id="borderWidth" value="10" min="0">
+
+    <div class="button-row">
+      <button onclick="generateQRCode()">Generate QR Code</button>
+      <button id="downloadButton" style="display: none;" onclick="downloadQRCode()">Download QR Code</button>
     </div>
-    <div class="color-input">
-        <label for="borderRadius">Border Radius (px): </label>
-        <input type="number" id="borderRadius" value="20" min="0">
-    </div>
-    <button onclick="generateQRCode()">Generate QR Code</button>
+
     <div id="qrcode"></div>
-    <button id="downloadButton" style="display: none;" onclick="downloadQRCode()">Download QR Code</button>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script>
-        function generateQRCode() {
-            var url = document.getElementById("urlInput").value;
-            var foregroundColor = document.getElementById("foregroundColor").value;
-            var backgroundColor = document.getElementById("backgroundColor").value;
-            var borderColor = document.getElementById("borderColor").value;
-            var borderWidth = document.getElementById("borderWidth").value;
-            var borderRadius = document.getElementById("borderRadius").value;
+  </div>
 
-            if (url) {
-                document.getElementById("qrcode").innerHTML = "";
-                var qrCode = new QRCode(document.getElementById("qrcode"), {
-                    text: url,
-                    width: 128,
-                    height: 128,
-                    colorDark: foregroundColor,
-                    colorLight: backgroundColor,
-                    correctLevel: QRCode.CorrectLevel.H
-                });
+  <script>
+    function generateQRCode() {
+      const url = document.getElementById("urlInput").value.trim();
+      const foregroundColor = document.getElementById("foregroundColor").value;
+      const backgroundColor = document.getElementById("backgroundColor").value;
+      const borderColor = document.getElementById("borderColor").value;
+      const borderWidth = document.getElementById("borderWidth").value;
+      const borderRadius = document.getElementById("borderRadius").value;
 
-                // Apply border customizations
-                var qrElement = document.getElementById("qrcode").getElementsByTagName("img")[0];
-                qrElement.style.borderColor = borderColor;
-                qrElement.style.borderWidth = borderWidth + "px"; // Apply border-width
-                qrElement.style.borderRadius = borderRadius + "px"; // Apply border-radius
+      if (!url) {
+        alert("Please enter a URL.");
+        return;
+      }
 
-                // Show the download button
-                document.getElementById("downloadButton").style.display = "block";
-            } else {
-                alert("Please enter a URL");
-            }
+      document.getElementById("qrcode").innerHTML = "";
+
+      const qr = new QRCode(document.getElementById("qrcode"), {
+        text: url,
+        width: 256,
+        height: 256,
+        colorDark: foregroundColor,
+        colorLight: backgroundColor,
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      setTimeout(() => {
+        const img = document.querySelector("#qrcode img");
+        if (img) {
+          img.style.borderColor = borderColor;
+          img.style.borderWidth = `${borderWidth}px`;
+          img.style.borderStyle = "double";
+          img.style.borderRadius = `${borderRadius}px`;
         }
+        document.getElementById("downloadButton").style.display = "inline-block";
+      }, 300);
+    }
 
-        function downloadQRCode() {
-            var qrElement = document.getElementById("qrcode").getElementsByTagName("img")[0];
-            var qrURL = qrElement.src;
-            var downloadLink = document.createElement("a");
-            downloadLink.href = qrURL;
-            downloadLink.download = "qr_code.png";
-            downloadLink.click();
-        }
+    function downloadQRCode() {
+      const img = document.querySelector("#qrcode img");
+      if (!img) return;
 
-        // Auto-generate QR code for a specific URL on page load
-        window.onload = function() {
-            var defaultUrl = "WWW.foodhub.com";
-            document.getElementById("urlInput").value = defaultUrl;
-            generateQRCode();
-        };
-    </script>
+      const link = document.createElement("a");
+      link.href = img.src;
+      link.download = "melroy-qr-code.png";
+      link.click();
+    }
+  </script>
 </body>
 </html>
