@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
   dropdown.classList.add("dropdown-content");
   dropdown.style.display = "none";
   dropdown.style.position = "absolute";
-  dropdown.style.backgroundColor = "rgba(17, 24, 39, 0.9)"; // transparent dark
+  dropdown.style.backgroundColor = "rgba(17, 24, 39, 0.7)"; // semi-transparent dark background
   dropdown.style.border = "3px solid #7C3AED";
   dropdown.style.borderRadius = "12px";
   dropdown.style.padding = "10px";
@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
   dropdown.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.3)";
   dropdown.style.transition = "opacity 0.2s ease";
   dropdown.style.opacity = "0";
+  dropdown.style.backdropFilter = "blur(6px)";
 
   pages.forEach(page => {
     if (page.action === "logout") {
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         location.href = "index.html";
       };
 
-      // Styled logout button with fully rounded corners
+      // Styled logout button
       logoutBtn.style.backgroundColor = "#ff4d4d";
       logoutBtn.style.color = "#fff";
       logoutBtn.style.fontWeight = "bold";
@@ -55,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
       logoutBtn.style.cursor = "pointer";
       logoutBtn.style.width = "100%";
       logoutBtn.style.textAlign = "left";
-      logoutBtn.style.borderRadius = "8px";
+      logoutBtn.style.borderRadius = "6px";
 
       logoutBtn.addEventListener("mouseover", () => logoutBtn.style.backgroundColor = "#9333ea");
       logoutBtn.addEventListener("mouseout", () => logoutBtn.style.backgroundColor = "#ff4d4d");
@@ -101,9 +102,11 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Close dropdown when clicking outside
-  document.addEventListener("click", function () {
-    dropdown.style.display = "none";
-    dropdown.style.opacity = "0";
+  document.addEventListener("click", function (event) {
+    if (!menuContainer.contains(event.target)) {
+      dropdown.style.display = "none";
+      dropdown.style.opacity = "0";
+    }
   });
 
   menuContainer.appendChild(menuButton);
