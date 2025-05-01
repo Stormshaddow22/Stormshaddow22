@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Protected Page</title>
+  <script>
+    if (localStorage.getItem("authenticated") !== "true") {
+      window.location.href = "index.html"; // send them back to login
+    }
+  </script>
+</head>
+</html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Size Reducer</title>
+    <style>
+        :root {
+            --primary: #7C3AED;
+            --background: #111827;
+            --surface: #1F2937;
+            --text: #F9FAFB;
+            --accent: #10B981;
+        }
+
+        body {
+            margin: 0;
+            padding: 2rem;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .upload-area {
+            background-color: var(--surface);
+            border: 2px dashed var(--primary);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background-color: #2D3748;
+        }
+
+        .preview-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .preview-box {
+            background-color: var(--surface);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .preview-box h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        .preview-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+        }
+
+        .controls {
+            background-color: var(--surface);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .slider-container {
+            margin-bottom: 1.5rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .file-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: var(--surface);
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .download-btn {
+            background-color: var(--accent);
+            color: var(--text);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #059669;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Image Size Reducer</h1>
+            <p>Compress your JPG/PNG images without losing quality</p>
+        </div>
+
+        <div class="upload-area" id="dropZone">
+            <h2>Drop your image here or click to upload</h2>
+            <input type="file" id="fileInput" accept="image/jpeg,image/png" style="display: none;">
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-box">
+                <h3>Original</h3>
+                <img id="originalPreview" class="preview-image">
+                <p>Original Size: <span id="originalSize">0 KB</span></p>
+            </div>
+            <div class="preview-box">
+                <h3>Compressed</h3>
+                <img id="compressedPreview" class="preview-image">
+                <p>Compressed Size: <span id="compressedSize">0 KB</span></p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="slider-container">
+                <label for="qualitySlider">Quality: <span id="qualityValue">80%</span></label>
+                <input type="range" id="qualitySlider" min="1" max="100" value="80">
+            </div>
+        </div>
+
+        <button class="download-btn" id="downloadBtn">Download Compressed Image</button>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const originalPreview = document.getElementById('originalPreview');
+        const compressedPreview = document.getElementById('compressedPreview');
+        const originalSize = document.getElementById('originalSize');
+        const compressedSize = document.getElementById('compressedSize');
+        const qualitySlider = document.getElementById('qualitySlider');
+        const qualityValue = document.getElementById('qualityValue');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        let originalImage = null;
+
+        dropZone.onclick = () => fileInput.click();
+
+        dropZone.ondragover = (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#10B981';
+        };
+
+        dropZone.ondragleave = () => {
+            dropZone.style.borderColor = '#7C3AED';
+        };
+
+        dropZone.ondrop = (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#7C3AED';
+            const file = e.dataTransfer.files[0];
+            handleImage(file);
+        };
+
+        fileInput.onchange = () => {
+            const file = fileInput.files[0];
+            handleImage(file);
+        };
+
+        function handleImage(file) {
+            if (!file.type.match(/image\/(jpeg|png)/)) {
+                alert('Please upload a JPG or PNG image');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                originalImage = new Image();
+                originalImage.src = e.target.result;
+                originalImage.onload = () => {
+                    originalPreview.src = originalImage.src;
+                    originalSize.textContent = formatBytes(file.size);
+                    compressImage();
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+
+        qualitySlider.oninput = () => {
+            qualityValue.textContent = qualitySlider.value + '%';
+            if (originalImage) compressImage();
+        };
+
+        function compressImage() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = originalImage.width;
+            canvas.height = originalImage.height;
+
+            ctx.drawImage(originalImage, 0, 0);
+
+            const quality = qualitySlider.value / 100;
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+
+            compressedPreview.src = compressedDataUrl;
+            
+            // Calculate compressed size
+            const base64str = compressedDataUrl.split(',')[1];
+            const compressedBytes = atob(base64str).length;
+            compressedSize.textContent = formatBytes(compressedBytes);
+
+            downloadBtn.onclick = () => {
+                const link = document.createElement('a');
+                link.download = 'compressed-image.jpg';
+                link.href = compressedDataUrl;
+                link.click();
+            };
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    </script>
+</body>
+</html>
+
