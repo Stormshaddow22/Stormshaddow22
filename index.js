@@ -8,6 +8,7 @@ const pages = [
   { name: "CSUK MTD", url: "https://stormshaddow22.github.io/Stormshaddow22/CSUKMTDSTATS.html" },
   { name: "Incentive Calc", url: "https://stormshaddow22.github.io/Stormshaddow22/PayoutCalculator-2.0.html" },
   { name: "Resize image", url: "https://stormshaddow22.github.io/Stormshaddow22/ImageSizeReducer.html" },
+  { name: "Remove Background", url: "https://www.remove.bg/upload", external: true },
   { name: "Logout", action: "logout" }
 ];
 
@@ -46,9 +47,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
       dropdown.appendChild(logoutBtn);
     } else {
-      const link = document.createElement("a");
-      link.href = page.url;
-      link.innerText = page.name;
+     const link = document.createElement("a");
+link.innerText = page.name;
+
+if (page.external) {
+  link.href = page.url;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+} else {
+  link.href = page.url;
+}
+
 
       // If download is set, apply download attribute
       if (page.download) {
