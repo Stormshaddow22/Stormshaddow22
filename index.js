@@ -7,6 +7,7 @@ const pages = [
   { name: "Call Que 2", url: "https://stormshaddow22.github.io/Stormshaddow22/screen.html" },
   { name: "CSUK MTD", url: "https://stormshaddow22.github.io/Stormshaddow22/CSUKMTDSTATS.html" },
   { name: "Incentive Calc", url: "https://stormshaddow22.github.io/Stormshaddow22/PayoutCalculator-2.0.html" },
+  { name: "Resize image", url: "https://stormshaddow22.github.io/Stormshaddow22/ImageSizeReducer.html" },
   { name: "Logout", action: "logout" }
 ];
 
