@@ -1,12 +1,13 @@
 const pages = [
   { name: "Home", url: "https://stormshaddow22.github.io/Stormshaddow22/index.html" },
-  { name: "Download Google QR", url: "https://stormshaddow22.github.io/Stormshaddow22/Buisness%20review%20QR%20generator.html",download: true },
+  { name: "Download Google QR", url: "https://stormshaddow22.github.io/Stormshaddow22/Buisness%20review%20QR%20generator.html", download: true },
   { name: "QRcreator", url: "https://stormshaddow22.github.io/Stormshaddow22/QRcreator.html" },
   { name: "All Calc", url: "https://stormshaddow22.github.io/Stormshaddow22/Allcalc2.0.html" },
   { name: "Call Que 1", url: "https://stormshaddow22.github.io/Stormshaddow22/Call%20Ques.html" },
   { name: "Call Que 2", url: "https://stormshaddow22.github.io/Stormshaddow22/screen.html" },
   { name: "CSUK MTD", url: "https://stormshaddow22.github.io/Stormshaddow22/CSUKMTDSTATS.html" },
   { name: "Incentive Calc", url: "https://stormshaddow22.github.io/Stormshaddow22/PayoutCalculator-2.0.html" },
+  { name: "Resize image", url: "https://stormshaddow22.github.io/Stormshaddow22/ImageSizeReducer.html" },
   { name: "Logout", action: "logout" }
 ];
 
@@ -33,9 +34,9 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
       // Style the logout button
-      logoutBtn.style.backgroundColor = "#ff4d4d";    // red
-      logoutBtn.style.color = "#fff";                 // white text
-      logoutBtn.style.fontWeight = "bold";            // bold text
+      logoutBtn.style.backgroundColor = "#ff4d4d";
+      logoutBtn.style.color = "#fff";
+      logoutBtn.style.fontWeight = "bold";
       logoutBtn.style.border = "none";
       logoutBtn.style.padding = "10px";
       logoutBtn.style.marginTop = "10px";
@@ -48,6 +49,13 @@ document.addEventListener("DOMContentLoaded", function () {
       const link = document.createElement("a");
       link.href = page.url;
       link.innerText = page.name;
+
+      // If download is set, apply download attribute
+      if (page.download) {
+        const filename = page.url.split("/").pop(); // extract file name from URL
+        link.setAttribute("download", filename);
+      }
+
       dropdown.appendChild(link);
     }
   });
