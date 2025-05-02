@@ -30,6 +30,10 @@
       cursor: pointer;
     }
 
+    .dropdown-wrapper {
+      position: relative;
+    }
+
     .dropdown-content {
       position: absolute;
       top: 60px;
@@ -42,6 +46,13 @@
       backdrop-filter: blur(6px);
       display: none;
       z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .dropdown-content.show {
+      display: block;
+      opacity: 1;
     }
 
     .dropdown-content a {
@@ -84,12 +95,13 @@
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>Welcome, StormShaddow22</h1>
-    <button class="menu-button" id="menuBtn">☰ Menu</button>
+  <div class="dropdown-wrapper">
+    <div class="header">
+      <h1>Welcome, StormShaddow22</h1>
+      <button class="menu-button" id="menuBtn">☰ Menu</button>
+    </div>
+    <div class="dropdown-content" id="dropdown"></div>
   </div>
-
-  <div class="dropdown-content" id="dropdown"></div>
 
   <h2>Menu Click Tracker</h2>
   <table>
@@ -128,33 +140,29 @@
         link.target = "_blank";
         link.rel = "noopener noreferrer";
       }
-
-      link.addEventListener("click", (e) => {
+      link.addEventListener("click", () => {
         const key = `clickCount_${page.name}`;
         const count = parseInt(localStorage.getItem(key)) || 0;
         localStorage.setItem(key, count + 1);
         updateClickTable();
-
-        // Prevent page reload if already on this page
-        if (window.location.pathname.endsWith(page.url)) {
-          e.preventDefault();
-        }
       });
-
       dropdown.appendChild(link);
     });
 
     // Toggle dropdown menu
-    menuBtn.addEventListener("click", () => {
-      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    menuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle("show");
     });
 
+    // Close menu when clicking outside
     document.addEventListener("click", (e) => {
       if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.style.display = "none";
+        dropdown.classList.remove("show");
       }
     });
 
+    // Update click count table
     function updateClickTable() {
       const tbody = document.getElementById("clickTableBody");
       tbody.innerHTML = "";
@@ -167,7 +175,7 @@
       });
     }
 
-    // Initialise table on load
+    // On load
     updateClickTable();
   </script>
 </body>
