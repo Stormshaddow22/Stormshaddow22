@@ -104,6 +104,7 @@
 
   <script>
     const pages = [
+      { name: "Home", url: "index.html" },
       { name: "Download Google QR", url: "Buisness%20review%20QR%20generator.html" },
       { name: "QRcreator", url: "QRcreator.html" },
       { name: "All Calc", url: "Allcalc2.0.html" },
@@ -127,12 +128,19 @@
         link.target = "_blank";
         link.rel = "noopener noreferrer";
       }
-      link.addEventListener("click", () => {
+
+      link.addEventListener("click", (e) => {
         const key = `clickCount_${page.name}`;
         const count = parseInt(localStorage.getItem(key)) || 0;
         localStorage.setItem(key, count + 1);
         updateClickTable();
+
+        // Prevent page reload if already on this page
+        if (window.location.pathname.endsWith(page.url)) {
+          e.preventDefault();
+        }
       });
+
       dropdown.appendChild(link);
     });
 
@@ -147,11 +155,20 @@
       }
     });
 
-    // Click table update
     function updateClickTable() {
       const tbody = document.getElementById("clickTableBody");
       tbody.innerHTML = "";
       pages.forEach(page => {
         const key = `clickCount_${page.name}`;
-        const count = parseInt(localStorage.get
+        const count = parseInt(localStorage.getItem(key)) || 0;
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${page.name}</td><td>${count}</td>`;
+        tbody.appendChild(row);
+      });
+    }
 
+    // Initialise table on load
+    updateClickTable();
+  </script>
+</body>
+</html>
