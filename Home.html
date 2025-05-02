@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StormShaddow22 | Home</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #111827;
+      color: #F9FAFB;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background-color: #1F2937;
+    }
+
+    .menu-button {
+      font-size: 20px;
+      background-color: #7C3AED;
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .dropdown-content {
+      position: absolute;
+      top: 60px;
+      left: 20px;
+      background-color: rgba(17, 24, 39, 0.9);
+      border: 3px solid #7C3AED;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      backdrop-filter: blur(6px);
+      display: none;
+      z-index: 1000;
+    }
+
+    .dropdown-content a {
+      display: block;
+      color: #F9FAFB;
+      padding: 8px 10px;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #7C3AED;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 30px;
+      color: #F9FAFB;
+    }
+
+    table {
+      width: 80%;
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #374151;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #1F2937;
+    }
+
+    td {
+      background-color: #1A202C;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Welcome, StormShaddow22</h1>
+    <button class="menu-button" id="menuBtn">☰ Menu</button>
+  </div>
+
+  <div class="dropdown-content" id="dropdown"></div>
+
+  <h2>Menu Click Tracker</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Page</th>
+        <th>Click Count</th>
+      </tr>
+    </thead>
+    <tbody id="clickTableBody"></tbody>
+  </table>
+
+  <script>
+    const pages = [
+      { name: "Download Google QR", url: "Buisness%20review%20QR%20generator.html" },
+      { name: "QRcreator", url: "QRcreator.html" },
+      { name: "All Calc", url: "Allcalc2.0.html" },
+      { name: "Call Que 1", url: "Call%20Ques.html" },
+      { name: "Call Que 2", url: "screen.html" },
+      { name: "CSUK MTD", url: "CSUKMTDSTATS.html" },
+      { name: "Incentive Calc", url: "PayoutCalculator-2.0.html" },
+      { name: "Resize image", url: "ImageSizeReducer.html" },
+      { name: "Remove Background", url: "https://www.remove.bg/upload", external: true }
+    ];
+
+    const dropdown = document.getElementById("dropdown");
+    const menuBtn = document.getElementById("menuBtn");
+
+    // Build menu
+    pages.forEach(page => {
+      const link = document.createElement("a");
+      link.textContent = page.name;
+      link.href = page.url;
+      if (page.external) {
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+      }
+      link.addEventListener("click", () => {
+        const key = `clickCount_${page.name}`;
+        const count = parseInt(localStorage.getItem(key)) || 0;
+        localStorage.setItem(key, count + 1);
+        updateClickTable();
+      });
+      dropdown.appendChild(link);
+    });
+
+    // Toggle dropdown menu
+    menuBtn.addEventListener("click", () => {
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = "none";
+      }
+    });
+
+    // Click table update
+    function updateClickTable() {
+      const tbody = document.getElementById("clickTableBody");
+      tbody.innerHTML = "";
+      pages.forEach(page => {
+        const key = `clickCount_${page.name}`;
+        const count = parseInt(localStorage.get
+
