@@ -18,68 +18,73 @@
       align-items: center;
       padding: 16px 20px;
       background-color: #1F2937;
+      position: relative;
     }
 
-    .menu-button,
-    .logout-button {
-      font-size: 16px;
+    .menu-container {
+      position: relative;
+    }
+
+    .menu-button {
+      font-size: 20px;
       background-color: #7C3AED;
       color: white;
       border: none;
       padding: 10px 14px;
       border-radius: 10px;
       cursor: pointer;
-      margin-left: 10px;
-    }
-
-    .logout-button:hover {
-      background-color: #9333ea;
     }
 
     .dropdown-content {
       position: absolute;
-      top: 60px;
-      right: 20px;
+      right: 0;
+      top: 100%;
       background-color: rgba(17, 24, 39, 0.9);
       border: 3px solid #7C3AED;
       border-radius: 12px;
       padding: 10px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-      backdrop-filter: blur(6px);
       display: none;
       z-index: 1000;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      backdrop-filter: blur(6px);
     }
 
-    .dropdown-content a {
+    .dropdown-content a,
+    .dropdown-content button {
       display: block;
+      width: 100%;
+      background: none;
       color: #F9FAFB;
       padding: 8px 10px;
       text-decoration: none;
       border-radius: 6px;
-      white-space: nowrap;
+      text-align: left;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
     }
 
-    .dropdown-content a:hover {
+    .dropdown-content a:hover,
+    .dropdown-content button:hover {
       background-color: #7C3AED;
     }
 
     h2 {
       text-align: center;
       margin-top: 30px;
-      color: #F9FAFB;
     }
 
     table {
       margin: 20px auto;
       border-collapse: collapse;
-      width: auto;
-      min-width: 300px;
+      width: fit-content;
     }
 
     th, td {
       border: 1px solid #374151;
-      padding: 12px 20px;
+      padding: 10px 20px;
       text-align: center;
+      white-space: nowrap;
     }
 
     th {
@@ -90,36 +95,28 @@
       background-color: #1A202C;
     }
 
-    .reset-container {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .reset-container button {
-      background-color: #EF4444;
-      color: white;
+    .reset-btn {
+      display: block;
+      margin: 20px auto;
       padding: 10px 16px;
+      background-color: #ef4444;
+      color: white;
+      font-weight: bold;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
     }
 
-    .reset-container button:hover {
-      background-color: #B91C1C;
+    .reset-btn:hover {
+      background-color: #dc2626;
     }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>Welcome, StormShaddow22</h1>
-    <div>
-      <button class="menu-button" id="menuBtn">☰ Menu</button>
-      <button class="logout-button" id="logoutBtn">Logout</button>
-    </div>
+    <div class="menu-container" id="menuContainer"></div>
   </div>
-
-  <div class="dropdown-content" id="dropdown"></div>
 
   <h2>Menu Click Tracker</h2>
   <table>
@@ -132,12 +129,11 @@
     <tbody id="clickTableBody"></tbody>
   </table>
 
-  <div class="reset-container">
-    <button id="resetBtn">Reset Click Data</button>
-  </div>
+  <button class="reset-btn" onclick="resetCounts()">Reset Counts</button>
 
   <script>
     const pages = [
+      { name: "Home", url: "index.html" },
       { name: "Download Google QR", url: "Buisness%20review%20QR%20generator.html", download: true },
       { name: "QRcreator", url: "QRcreator.html" },
       { name: "All Calc", url: "Allcalc2.0.html" },
@@ -146,84 +142,92 @@
       { name: "CSUK MTD", url: "CSUKMTDSTATS.html" },
       { name: "Incentive Calc", url: "PayoutCalculator-2.0.html" },
       { name: "Resize image", url: "ImageSizeReducer.html" },
-      { name: "Remove Background", url: "https://www.remove.bg/upload", external: true }
+      { name: "Remove Background", url: "https://www.remove.bg/upload", external: true },
+      { name: "Logout", action: "logout" }
     ];
 
-    const dropdown = document.getElementById("dropdown");
-    const menuBtn = document.getElementById("menuBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
+    const menuContainer = document.getElementById("menuContainer");
+    const menuBtn = document.createElement("button");
+    menuBtn.className = "menu-button";
+    menuBtn.innerHTML = "☰";
+    const dropdown = document.createElement("div");
+    dropdown.className = "dropdown-content";
 
     pages.forEach(page => {
-      const link = document.createElement("a");
-      link.textContent = page.name;
-
-      if (page.external) {
-        link.href = page.url;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
+      if (page.action === "logout") {
+        const logoutBtn = document.createElement("button");
+        logoutBtn.innerText = page.name;
+        logoutBtn.onclick = () => {
+          localStorage.removeItem("authenticated");
+          location.href = "index.html";
+        };
+        dropdown.appendChild(logoutBtn);
       } else {
+        const link = document.createElement("a");
+        link.innerText = page.name;
         link.href = page.url;
+        if (page.external) {
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+        }
+        if (page.download) {
+          link.setAttribute("download", "");
+        }
+        link.addEventListener("click", () => {
+          const key = `clickCount_${page.name}`;
+          const count = parseInt(localStorage.getItem(key)) || 0;
+          localStorage.setItem(key, count + 1);
+          updateClickTable();
+        });
+        dropdown.appendChild(link);
       }
-
-      if (page.download) {
-        link.setAttribute("download", page.url.split("/").pop());
-      }
-
-      link.addEventListener("click", () => {
-        const key = `clickCount_${page.name}`;
-        const count = parseInt(localStorage.getItem(key)) || 0;
-        localStorage.setItem(key, count + 1);
-        updateClickTable();
-      });
-
-      dropdown.appendChild(link);
     });
 
-    // Toggle dropdown
     menuBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     });
 
-    // Close dropdown on outside click
     document.addEventListener("click", (e) => {
-      if (!dropdown.contains(e.target) && e.target !== menuBtn) {
+      if (!menuContainer.contains(e.target)) {
         dropdown.style.display = "none";
       }
     });
 
-    logoutBtn.addEventListener("click", () => {
-      alert("You have been logged out.");
-      // Add logout logic here if needed
-    });
+    menuContainer.appendChild(menuBtn);
+    menuContainer.appendChild(dropdown);
 
     function updateClickTable() {
       const tbody = document.getElementById("clickTableBody");
       tbody.innerHTML = "";
       pages.forEach(page => {
+        if (page.action === "logout") return;
         const key = `clickCount_${page.name}`;
         const count = parseInt(localStorage.getItem(key)) || 0;
-
         const row = document.createElement("tr");
-        row.innerHTML = `<td>${page.name}</td><td>${count}</td>`;
+        const nameCell = document.createElement("td");
+        const countCell = document.createElement("td");
+        nameCell.textContent = page.name;
+        countCell.textContent = count;
+        row.appendChild(nameCell);
+        row.appendChild(countCell);
         tbody.appendChild(row);
       });
     }
 
-    document.getElementById("resetBtn").addEventListener("click", () => {
-      const password = prompt("Enter admin password to reset:");
-      if (password === "6800") {
+    function resetCounts() {
+      const pwd = prompt("Enter admin password to reset:");
+      if (pwd === "6800") {
         pages.forEach(page => {
-          localStorage.removeItem(`clickCount_${page.name}`);
+          if (!page.action) localStorage.removeItem(`clickCount_${page.name}`);
         });
         updateClickTable();
-        alert("Click data has been reset.");
+        alert("Click counts reset.");
       } else {
-        alert("Incorrect password. Reset aborted.");
+        alert("Incorrect password.");
       }
-    });
+    }
 
-    // Initialise table on load
     updateClickTable();
   </script>
 </body>
