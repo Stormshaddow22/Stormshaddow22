@@ -18,17 +18,22 @@
       align-items: center;
       padding: 16px 20px;
       background-color: #1F2937;
-      position: relative;
     }
 
-    .menu-button {
-      font-size: 20px;
+    .menu-button,
+    .logout-button {
+      font-size: 16px;
       background-color: #7C3AED;
       color: white;
       border: none;
       padding: 10px 14px;
       border-radius: 10px;
       cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .logout-button:hover {
+      background-color: #9333ea;
     }
 
     .dropdown-content {
@@ -43,13 +48,6 @@
       backdrop-filter: blur(6px);
       display: none;
       z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .dropdown-content.show {
-      display: block;
-      opacity: 1;
     }
 
     .dropdown-content a {
@@ -58,6 +56,7 @@
       padding: 8px 10px;
       text-decoration: none;
       border-radius: 6px;
+      white-space: nowrap;
     }
 
     .dropdown-content a:hover {
@@ -67,17 +66,19 @@
     h2 {
       text-align: center;
       margin-top: 30px;
+      color: #F9FAFB;
     }
 
     table {
-      width: 80%;
       margin: 20px auto;
       border-collapse: collapse;
+      width: auto;
+      min-width: 300px;
     }
 
     th, td {
       border: 1px solid #374151;
-      padding: 12px;
+      padding: 12px 20px;
       text-align: center;
     }
 
@@ -89,31 +90,36 @@
       background-color: #1A202C;
     }
 
-    .reset-button {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
+    .reset-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .reset-container button {
       background-color: #EF4444;
       color: white;
-      font-size: 16px;
+      padding: 10px 16px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      font-weight: bold;
     }
 
-    .reset-button:hover {
-      background-color: #DC2626;
+    .reset-container button:hover {
+      background-color: #B91C1C;
     }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>Welcome, StormShaddow22</h1>
-    <div style="position: relative;">
+    <div>
       <button class="menu-button" id="menuBtn">☰ Menu</button>
-      <div class="dropdown-content" id="dropdown"></div>
+      <button class="logout-button" id="logoutBtn">Logout</button>
     </div>
   </div>
+
+  <div class="dropdown-content" id="dropdown"></div>
 
   <h2>Menu Click Tracker</h2>
   <table>
@@ -126,11 +132,12 @@
     <tbody id="clickTableBody"></tbody>
   </table>
 
-  <button class="reset-button" id="resetBtn">Reset Click Counts</button>
+  <div class="reset-container">
+    <button id="resetBtn">Reset Click Data</button>
+  </div>
 
   <script>
     const pages = [
-      { name: "Home", url: "index.html" },
       { name: "Download Google QR", url: "Buisness%20review%20QR%20generator.html", download: true },
       { name: "QRcreator", url: "QRcreator.html" },
       { name: "All Calc", url: "Allcalc2.0.html" },
@@ -144,20 +151,22 @@
 
     const dropdown = document.getElementById("dropdown");
     const menuBtn = document.getElementById("menuBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-    // Build dropdown menu
     pages.forEach(page => {
       const link = document.createElement("a");
       link.textContent = page.name;
-      link.href = page.url;
 
       if (page.external) {
+        link.href = page.url;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
+      } else {
+        link.href = page.url;
       }
 
       if (page.download) {
-        link.setAttribute("download", "");
+        link.setAttribute("download", page.url.split("/").pop());
       }
 
       link.addEventListener("click", () => {
@@ -170,46 +179,52 @@
       dropdown.appendChild(link);
     });
 
+    // Toggle dropdown
     menuBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      dropdown.classList.toggle("show");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     });
 
+    // Close dropdown on outside click
     document.addEventListener("click", (e) => {
-      if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.classList.remove("show");
+      if (!dropdown.contains(e.target) && e.target !== menuBtn) {
+        dropdown.style.display = "none";
       }
     });
 
-    // Populate click counts
+    logoutBtn.addEventListener("click", () => {
+      alert("You have been logged out.");
+      // Add logout logic here if needed
+    });
+
     function updateClickTable() {
       const tbody = document.getElementById("clickTableBody");
       tbody.innerHTML = "";
       pages.forEach(page => {
         const key = `clickCount_${page.name}`;
         const count = parseInt(localStorage.getItem(key)) || 0;
+
         const row = document.createElement("tr");
         row.innerHTML = `<td>${page.name}</td><td>${count}</td>`;
         tbody.appendChild(row);
       });
     }
 
-    updateClickTable();
-
-    // Reset button logic
     document.getElementById("resetBtn").addEventListener("click", () => {
-      const input = prompt("Enter admin password to reset click counts:");
-      if (input === "6800") {
+      const password = prompt("Enter admin password to reset:");
+      if (password === "6800") {
         pages.forEach(page => {
-          const key = `clickCount_${page.name}`;
-          localStorage.removeItem(key);
+          localStorage.removeItem(`clickCount_${page.name}`);
         });
         updateClickTable();
-        alert("Click counts reset successfully.");
+        alert("Click data has been reset.");
       } else {
-        alert("Incorrect password. Reset cancelled.");
+        alert("Incorrect password. Reset aborted.");
       }
     });
+
+    // Initialise table on load
+    updateClickTable();
   </script>
 </body>
 </html>
