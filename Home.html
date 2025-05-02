@@ -18,6 +18,7 @@
       align-items: center;
       padding: 16px 20px;
       background-color: #1F2937;
+      position: relative;
     }
 
     .menu-button {
@@ -30,14 +31,10 @@
       cursor: pointer;
     }
 
-    .dropdown-wrapper {
-      position: relative;
-    }
-
     .dropdown-content {
       position: absolute;
       top: 60px;
-      left: 20px;
+      right: 20px;
       background-color: rgba(17, 24, 39, 0.9);
       border: 3px solid #7C3AED;
       border-radius: 12px;
@@ -70,7 +67,6 @@
     h2 {
       text-align: center;
       margin-top: 30px;
-      color: #F9FAFB;
     }
 
     table {
@@ -92,15 +88,31 @@
     td {
       background-color: #1A202C;
     }
+
+    .reset-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #EF4444;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .reset-button:hover {
+      background-color: #DC2626;
+    }
   </style>
 </head>
 <body>
-  <div class="dropdown-wrapper">
-    <div class="header">
-      <h1>Welcome, StormShaddow22</h1>
+  <div class="header">
+    <h1>Welcome, StormShaddow22</h1>
+    <div style="position: relative;">
       <button class="menu-button" id="menuBtn">☰ Menu</button>
+      <div class="dropdown-content" id="dropdown"></div>
     </div>
-    <div class="dropdown-content" id="dropdown"></div>
   </div>
 
   <h2>Menu Click Tracker</h2>
@@ -114,10 +126,12 @@
     <tbody id="clickTableBody"></tbody>
   </table>
 
+  <button class="reset-button" id="resetBtn">Reset Click Counts</button>
+
   <script>
     const pages = [
       { name: "Home", url: "index.html" },
-      { name: "Download Google QR", url: "Buisness%20review%20QR%20generator.html" },
+      { name: "Download Google QR", url: "Buisness%20review%20QR%20generator.html", download: true },
       { name: "QRcreator", url: "QRcreator.html" },
       { name: "All Calc", url: "Allcalc2.0.html" },
       { name: "Call Que 1", url: "Call%20Ques.html" },
@@ -131,38 +145,43 @@
     const dropdown = document.getElementById("dropdown");
     const menuBtn = document.getElementById("menuBtn");
 
-    // Build menu
+    // Build dropdown menu
     pages.forEach(page => {
       const link = document.createElement("a");
       link.textContent = page.name;
       link.href = page.url;
+
       if (page.external) {
         link.target = "_blank";
         link.rel = "noopener noreferrer";
       }
+
+      if (page.download) {
+        link.setAttribute("download", "");
+      }
+
       link.addEventListener("click", () => {
         const key = `clickCount_${page.name}`;
         const count = parseInt(localStorage.getItem(key)) || 0;
         localStorage.setItem(key, count + 1);
         updateClickTable();
       });
+
       dropdown.appendChild(link);
     });
 
-    // Toggle dropdown menu
     menuBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       dropdown.classList.toggle("show");
     });
 
-    // Close menu when clicking outside
     document.addEventListener("click", (e) => {
       if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
         dropdown.classList.remove("show");
       }
     });
 
-    // Update click count table
+    // Populate click counts
     function updateClickTable() {
       const tbody = document.getElementById("clickTableBody");
       tbody.innerHTML = "";
@@ -175,8 +194,22 @@
       });
     }
 
-    // On load
     updateClickTable();
+
+    // Reset button logic
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      const input = prompt("Enter admin password to reset click counts:");
+      if (input === "6800") {
+        pages.forEach(page => {
+          const key = `clickCount_${page.name}`;
+          localStorage.removeItem(key);
+        });
+        updateClickTable();
+        alert("Click counts reset successfully.");
+      } else {
+        alert("Incorrect password. Reset cancelled.");
+      }
+    });
   </script>
 </body>
 </html>
