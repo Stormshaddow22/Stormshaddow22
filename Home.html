@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>StormShaddow22 | Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
@@ -18,7 +19,11 @@
       align-items: center;
       padding: 16px 20px;
       background-color: #1F2937;
-      position: relative;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 20px;
     }
 
     .menu-container {
@@ -110,44 +115,21 @@
     .reset-btn:hover {
       background-color: #dc2626;
     }
-  </style>
-</head>
-<body>
-  <div class="header">
-  <div style="text-align: center;">
-    <h1>Welcome to StormShaddow22's Tools</h1>
-  </div>
-  <div class="menu-container" id="menuContainer"></div>
-</div>
-  
-      // space where i can show the time 
-<BR>
-<head>
-  <meta charset="UTF-8">
-  <title>Futuristic Flip Clock</title>
-  <style>
-    body {
-      background: #111827;
-      color: #F9FAFB;
-      font-family: 'Orbitron', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      height: 100vh;
-      margin: 0;
-    }
 
     #date {
       font-size: 2rem;
-      margin-bottom: 20px;
+      margin: 20px auto;
       color: #7C3AED;
       text-shadow: 0 0 10px #7C3AED88;
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
     }
 
     .clock {
       display: flex;
+      justify-content: center;
       gap: 8px;
+      margin-bottom: 30px;
     }
 
     .digit-wrapper {
@@ -166,6 +148,7 @@
       border-radius: 10px;
       box-shadow: inset 0 -1px 0 #000, 0 4px 8px rgba(0, 0, 0, 0.3);
       transition: background 0.3s;
+      font-family: 'Orbitron', sans-serif;
     }
 
     .flip {
@@ -197,22 +180,33 @@
     }
 
     @keyframes flipDown {
-      0% {
-        transform: rotateX(0deg);
-      }
-      50% {
-        transform: rotateX(-90deg);
-      }
-      100% {
-        transform: rotateX(-180deg);
-      }
+      0% { transform: rotateX(0deg); }
+      50% { transform: rotateX(-90deg); }
+      100% { transform: rotateX(-180deg); }
     }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
 </head>
 <body>
+  <div class="header">
+    <h1>Welcome to StormShaddow22's Tools</h1>
+    <div class="menu-container" id="menuContainer"></div>
+  </div>
+
   <div id="date"></div>
   <div class="clock" id="clock"></div>
+
+  <h2>Menu Click Tracker</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Page</th>
+        <th>Click Count</th>
+      </tr>
+    </thead>
+    <tbody id="clickTableBody"></tbody>
+  </table>
+
+  <button class="reset-btn" onclick="resetCounts()">Reset Counts</button>
 
   <script>
     async function fetchTimezone() {
@@ -240,8 +234,7 @@
 
     function updateClockParts(timeStr, ampm, prevTimeStr = '', prevAmPm = '') {
       const clock = document.getElementById('clock');
-      const currentDigits = clock.querySelectorAll('.digit');
-      const isFirstLoad = !currentDigits.length;
+      const isFirstLoad = clock.childElementCount === 0;
 
       if (isFirstLoad) {
         for (let i = 0; i < timeStr.length; i++) {
@@ -256,12 +249,10 @@
           }
         }
 
-        // Separator space before AM/PM
-        const ampmSpacer = document.createElement('div');
-        ampmSpacer.style.width = '10px';
-        clock.appendChild(ampmSpacer);
+        const spacer = document.createElement('div');
+        spacer.style.width = '10px';
+        clock.appendChild(spacer);
 
-        // AM/PM Box
         const ampmWrapper = document.createElement('div');
         ampmWrapper.className = 'ampm-wrapper';
         const ampmBox = document.createElement('div');
@@ -309,8 +300,8 @@
         };
 
         const timeParts = now.toLocaleTimeString('en-US', options).split(' ');
-        const timeStr = timeParts[0]; // hh:mm:ss
-        const ampm = timeParts[1]; // AM or PM
+        const timeStr = timeParts[0];
+        const ampm = timeParts[1];
 
         updateClockParts(timeStr, ampm, lastTimeStr, lastAmPm);
         lastTimeStr = timeStr;
@@ -322,23 +313,7 @@
     }
 
     startClock();
-  </script>
-</body>
-  //menu click count 
-  <h2>Menu Click Tracker</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Page</th>
-        <th>Click Count</th>
-      </tr>
-    </thead>
-    <tbody id="clickTableBody"></tbody>
-  </table>
 
-  <button class="reset-btn" onclick="resetCounts()">Reset Counts</button>
-
-  <script>
     const pages = [
       { name: "Home", url: "index.html" },
       { name: "Download Google QR", url: "Buisness%20review%20QR%20generator.html", download: true },
