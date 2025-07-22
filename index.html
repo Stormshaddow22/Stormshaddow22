@@ -4,16 +4,38 @@
   <title>Welcome</title>
   <script>
     const correctPassword = "0718";
+    const timeoutDuration = 60 * 60 * 1000; // 1 hour in milliseconds
+    let logoutTimer;
 
-    // Already verified?
+    function logoutUser() {
+      localStorage.removeItem("authenticated");
+      alert("You have been logged out due to inactivity.");
+      window.location.href = "index.html"; // Redirect to login page
+    }
+
+    function resetTimer() {
+      clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(logoutUser, timeoutDuration);
+    }
+
+    // Set up event listeners to detect activity
+    function setupInactivityTimer() {
+      ['click', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(evt => {
+        window.addEventListener(evt, resetTimer);
+      });
+      resetTimer(); // Start the timer
+    }
+
+    // Auth check and password prompt
     if (localStorage.getItem("authenticated") === "true") {
-      window.location.href = "Home.html"; // or wherever you want to go next
+      setupInactivityTimer();
+      window.location.href = "Home.html"; // Already authenticated
     } else {
       const password = prompt("Enter password to continue:");
-
       if (password === correctPassword) {
         localStorage.setItem("authenticated", "true");
-        window.location.href = "Home.html"; // Redirect to protected page
+        setupInactivityTimer();
+        window.location.href = "Home.html";
       } else {
         document.write("<h1>Access Denied</h1>");
       }
@@ -23,4 +45,3 @@
 <body>
 </body>
 </html>
-
