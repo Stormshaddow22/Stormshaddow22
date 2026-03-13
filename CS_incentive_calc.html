@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CS Incentives Calculator v4.2</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #496373; margin: 20px; font-size: 14px; }
+        .dashboard { background: #a6afff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,121,242,80); }
+        
+        /* Vibrant Inline Controls */
+        .controls { display: flex; gap: 10px; margin-bottom: 25px; background: #1a2a3a; padding: 15px; border-radius: 8px; color: white; align-items: center; border-bottom: 4px solid #3498db; }
+        .input-group { display: flex; align-items: center; gap: 8px; }
+        
+        #staffSearch { width: 98%; padding: 12px; border-radius: 6px; border: 2px solid #3498db; margin-bottom: 20px; outline: none; }
+
+        .role-section { margin-bottom: 40px; overflow-x: auto; } 
+        .role-header { color: #2c3e50; border-left: 8px solid #3498db; padding-left: 15px; margin-bottom: 15px; text-transform: uppercase; }
+
+        table { width: 100%; border-collapse: collapse; background: white; min-width: 1100px; }
+        
+        /* Gating Strike-through Logic */
+        .gated-row { text-decoration: line-through; opacity: 0.6; filter: grayscale(1); background: #fcfcfc !important; }
+        .gated-row td { color: #888 !important; }
+        /* Keep checkboxes and inputs functional even when row is "struck out" */
+        .gated-row input, .gated-row select { text-decoration: none !important; display: inline-block; }
+
+        /* Zoho Palette Headers */
+        th.col-name { background: #3498db; color: white; border: 1px solid #dee2e6; }
+        th.col-total { background: #ff9f43; color: white; border: 1px solid #dee2e6; }
+        th.col-metrics { background: #34495e; color: white; border: 1px solid #dee2e6; }
+        th.col-gates { background: #34495e; color: white; border: 1px solid #dee2e6; }
+        
+        th { padding: 12px; text-align: left; font-size: 12px; }
+        td { border: 1px solid #eee; padding: 10px; vertical-align: middle; }
+        
+        /* Zoho Palette Body Cells */
+        td.cell-name { background: #e8f4fd; font-weight: bold; color: #2c3e50; }
+        td.cell-total { background: #fff9db; font-weight: bold; color: #1a73e8; }
+
+        .metric-container { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 6px; }
+        .metric-box { flex: 0 0 90px; padding: 6px; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; text-align: center; text-decoration: none !important; }
+        
+        .m-name { font-size: 9px; font-weight: bold; margin-bottom: 4px; height: 22px; display: flex; align-items: center; justify-content: center; line-height: 1.1; color: #555; }
+        .val-in { width: 50px; padding: 3px; border: 1px solid #ced4da; font-size: 12px; border-radius: 4px; text-align: center; font-weight: bold; }
+        .payout-label { display: block; font-weight: 800; font-size: 10px; margin-top: 5px; padding: 2px; border-radius: 3px; color: white; }
+        
+        .gate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px; background: #fff5f5; padding: 8px; border-radius: 6px; border: 1px solid #ffdada; width: 220px; text-decoration: none !important; }
+        .gate-grid label { display: flex; align-items: center; gap: 4px; cursor: pointer; white-space: nowrap; }
+        
+        .won { background: #27ae60; } .lost { background: #e74c3c; }
+        .row-total { font-size: 1.3em; font-weight: bold; color: #2980b9; text-align: center; }
+
+        button { cursor: pointer; border: none; border-radius: 6px; font-weight: bold; transition: 0.2s; }
+        .btn-add { background: #2ecc71; color: white; padding: 10px 20px; }
+        .btn-overlay { background: #3498db; color: white; padding: 10px 20px; }
+        .btn-reset { background: #e74c3c; color: white; padding: 10px 20px; margin-left: auto; }
+        button:hover { opacity: 0.9; }
+
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; }
+        .overlay-card { background: white; margin: 2% auto; padding: 25px; width: 94%; max-height: 90vh; border-radius: 12px; overflow: auto; position: relative; }
+        .close-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+
+        .preview-table { border-collapse: collapse; width: 100%; font-size: 12px; }
+        .preview-table th, .preview-table td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        .header-blue { background: #3498db; color: white; font-weight: bold; }
+        .header-gray { background: #f1f3f4; font-weight: bold; }
+        
+        /* Zoho Red Tint for Omitted Rows */
+        .zoho-omitted { background-color: #ffdada !important; color: #a94442 !important; }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <h2 style="margin-top:0; color:#2c3e50;">CS Incentives Calculator</h2>
+    <input type="text" id="staffSearch" placeholder="🔍 Search staff name..." onkeyup="render()">
+
+    <div class="controls">
+        <div class="input-group">
+            <label>Add Staff Name:</label>
+            <input type="text" id="newName" style="padding:8px; border-radius:4px; border:none; width:180px;">
+        </div>
+        <div class="input-group">
+            <label>Role:</label>
+            <select id="newRole" style="padding:8px; border-radius:4px; border:none; width:130px;">
+                <option value="Team Lead">Team Lead</option>
+                <option value="SME">SME</option>
+                <option value="Agent">Agent</option>
+            </select>
+        </div>
+        <button class="btn-add" onclick="addNewStaff()">+ Add Staff</button>
+        <button class="btn-overlay" onclick="showOverlay()">📋 Table View</button>
+        <button class="btn-reset" onclick="clearAllData()">⚠️ Reset All</button>
+    </div>
+
+    <div id="tablesContainer"></div>
+</div>
+
+<div id="overlay">
+    <div class="overlay-card">
+        <div class="close-bar">
+            <h2 style="margin:0; color:#3498db;">Export To Sheets</h2>
+            <button onclick="document.getElementById('overlay').style.display='none'" style="background:#e74c3c; color:white; padding:8px 15px; border-radius:4px; border:none; cursor:pointer;">CLOSE</button>
+        </div>
+        <div id="overlayTableTarget"></div>
+    </div>
+</div>
+
+<script>
+const config = {
+    "Team Lead": {
+        metrics: ["Team CSAT", "Team Quality", "Team Shrinkage", "Sentiment Journey", "Coaching Missed", "BQ Improvement"],
+        calc: (s) => [
+            s[0] >= 95 ? 15 : (s[0] >= 91 ? 10 : (s[0] >= 85 ? 5 : 0)),
+            s[1] >= 100 ? 10 : (s[1] >= 85 ? 7.5 : 0),
+            s[2] <= 3 ? 10 : (s[2] <= 4 ? 7.5 : (s[2] <= 5 ? 5 : 0)),
+            s[3] >= 35 ? 15 : (s[3] >= 30 ? 7.5 : (s[3] >= 25 ? 5 : 0)),
+            s[4] <= 0 ? 10 : 0, 
+            s[5] >= 120 ? 15 : (s[5] >= 115 ? 7.5 : (s[5] >= 110 ? 5 : 0))
+        ],
+        gates: ["PIP/CAP", "Proc Err >6", "Fin Loss (2)", "Attnd <100%"]
+    },
+    "SME": {
+        metrics: ["Individual CSAT", "Chat Bot", "Individual Quality", "Resolution Rate", "SKC", "Site ACW", "Team Post PKT"],
+        calc: (s) => [
+            s[0] >= 91 ? 10 : (s[0] >= 81 ? 7.5 : (s[0] >= 75 ? 5 : 0)),
+            s[1] >= 50 ? 10 : (s[1] >= 45 ? 7.5 : (s[1] >= 40 ? 5 : 0)),
+            s[2] >= 100 ? 10 : (s[2] >= 85 ? 7.5 : 0),
+            s[3] >= 65 ? 15 : (s[3] >= 60 ? 10 : (s[3] >= 55 ? 5 : 0)),
+            s[4] >= 100 ? 10 : (s[4] >= 85 ? 7.5 : (s[4] >= 75 ? 5 : 0)),
+            s[5] <= 6 ? 10 : (s[5] <= 7 ? 7.5 : (s[5] <= 8 ? 5 : 0)),
+            s[6] >= 80 ? 10 : 0
+        ],
+        gates: ["Proc Err >6", "Fin Loss (2)", "UPL >1", "PIP/CAP"]
+    },
+    "Agent": {
+        metrics: ["CSAT", "Quality", "ACW", "Breaks", "Late Login"],
+        calc: (s) => [
+            s[0] >= 95 ? 20 : (s[0] >= 91 ? 15 : (s[0] >= 85 ? 7.5 : 0)),
+            s[1] >= 100 ? 10 : (s[1] >= 85 ? 7.5 : 0),
+            s[2] <= 4 ? 15 : (s[2] <= 6 ? 10 : (s[2] <= 8 ? 7.5 : 0)),
+            s[3] >= 1 ? 0 : 15,
+            s[4] >= 1 ? 0 : 15 
+        ],
+        gates: ["Proc Err >2", "Fin Loss (1)", "UPL >1", "PIP/CAP"]
+    }
+};
+
+let roster = JSON.parse(localStorage.getItem('incentiveRosterV3')) || [];
+
+function save() { localStorage.setItem('incentiveRosterV3', JSON.stringify(roster)); render(); }
+
+function addNewStaff() {
+    const name = document.getElementById('newName').value;
+    const role = document.getElementById('newRole').value;
+    if(!name) return;
+    roster.push({ id: Date.now(), name, role, scores: config[role].metrics.map(() => 0), gatesActive: [false,false,false,false] });
+    document.getElementById('newName').value = '';
+    save();
+}
+
+function updateScore(staffId, mIdx, val) {
+    roster.find(s => s.id === staffId).scores[mIdx] = parseFloat(val) || 0;
+    save();
+}
+
+function toggleGate(staffId, gIdx) {
+    let s = roster.find(s => s.id === staffId);
+    s.gatesActive[gIdx] = !s.gatesActive[gIdx];
+    save();
+}
+
+function render() {
+    const container = document.getElementById('tablesContainer');
+    const search = document.getElementById('staffSearch').value.toLowerCase();
+    container.innerHTML = '';
+
+    ["Team Lead", "SME", "Agent"].forEach(role => {
+        const filtered = roster.filter(s => s.role === role && s.name.toLowerCase().includes(search));
+        if(!filtered.length) return;
+
+        let html = `<div class="role-section"><h3 class="role-header">${role}s</h3><table><thead><tr>
+            <th class="col-name" style="width:140px">Staff Name</th>
+            <th class="col-total" style="width:100px">Total</th>
+            <th class="col-metrics">Metrics (Achievement | Earned)</th>
+            <th class="col-gates" style="width:230px">Gates</th>
+            <th class="col-gates" style="width:40px"></th>
+            </tr></thead><tbody>`;
+
+        filtered.forEach(s => {
+            const breakdown = config[role].calc(s.scores);
+            const isGated = s.gatesActive.some(g => g);
+            const total = isGated ? 0 : breakdown.reduce((a,b) => a+b, 0);
+
+            html += `<tr class="${isGated ? 'gated-row' : ''}">
+                <td class="cell-name">${s.name}</td>
+                <td class="cell-total">£${total.toFixed(2)}</td>
+                <td><div class="metric-container">`;
+            
+            s.scores.forEach((score, i) => {
+                const earned = breakdown[i];
+                html += `<div class="metric-box">
+                    <div class="m-name">${config[role].metrics[i]}</div>
+                    <input type="number" class="val-in" value="${score}" onchange="updateScore(${s.id}, ${i}, this.value)">
+                    <span class="payout-label ${earned > 0 ? 'won' : 'lost'}">£${earned.toFixed(2)}</span>
+                </div>`;
+            });
+
+            html += `</div></td><td><div class="gate-grid">`;
+            config[role].gates.forEach((g, i) => {
+                html += `<label><input type="checkbox" ${s.gatesActive[i] ? 'checked' : ''} onchange="toggleGate(${s.id}, ${i})"> ${g}</label>`;
+            });
+            html += `</div></td><td><button onclick="deleteStaff(${s.id})" style="color:#999; border:none; background:none; cursor:pointer; font-size:18px;">✖</button></td></tr>`;
+        });
+        container.innerHTML += html + `</tbody></table></div>`;
+    });
+}
+
+function showOverlay() {
+    let html = `<table class="preview-table">`;
+    ["Team Lead", "SME", "Agent"].forEach(role => {
+        const staff = roster.filter(s => s.role === role);
+        if(!staff.length) return;
+        html += `<tr class="header-blue"><td colspan="2">${role.toUpperCase()}</td><td colspan="${config[role].metrics.length * 2}">PERFORMANCE DATA</td></tr>`;
+        html += `<tr class="header-gray"><td>Name</td><td>Total</td>`;
+        config[role].metrics.forEach(m => html += `<td>${m} %</td><td>Earned</td>`);
+        html += `</tr>`;
+        staff.forEach(s => {
+            const breakdown = config[role].calc(s.scores);
+            const isGated = s.gatesActive.some(g => g);
+            const total = isGated ? 0 : breakdown.reduce((a,b) => a+b,0);
+            const rowStyle = isGated ? 'class="zoho-omitted"' : '';
+
+           html += `<tr ${rowStyle}>
+    <td style="background:#e8f4fd; font-weight:bold; color:#2c3e50;">${s.name}</td>
+    <td style="background:#fff9db; font-weight:bold;">£${total.toFixed(2)}</td>`;
+    
+            s.scores.forEach((v, i) => html += `<td>${v}%</td><td style="color:#27ae60; font-weight:bold;">£${breakdown[i].toFixed(2)}</td>`);
+            html += `</tr>`;
+        });
+        html += `<tr style="height:20px"><td colspan="30"></td></tr>`;
+    });
+    document.getElementById('overlayTableTarget').innerHTML = html + `</table>`;
+    document.getElementById('overlay').style.display = 'block';
+}
+
+function deleteStaff(id) { roster = roster.filter(s => s.id !== id); save(); }
+function clearAllData() { if(confirm("Clear all data?")) { roster = []; save(); } }
+render();
+</script>
+</body>
+</html>
