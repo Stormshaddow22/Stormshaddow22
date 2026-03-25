@@ -6,44 +6,48 @@
     <style>
         body {
             margin: 0;
-            padding: 10px;
+            padding: 5px; /* Minimal padding to save space */
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: transparent; /* Makes it blend with your dashboard wallpaper */
-            color: white; /* Matches your request for white text */
+            background: transparent; 
+            color: white; 
             text-align: center;
-            overflow: hidden;
+            overflow: hidden; /* Prevents scrollbars in small boxes */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100vh; /* Centers content vertically */
         }
 
+        /* Responsive font sizes that scale with the width of the iframe */
         .main-counter {
-            font-size: 8rem; /* Large days display like your reference */
-            font-weight: 600;
-            line-height: 1;
+            font-size: 25vw; /* Scales with box width */
+            font-weight: 700;
+            line-height: 0.9;
             margin: 0;
         }
 
         .days-label {
-            font-size: 2rem;
+            font-size: 8vw;
             font-weight: 300;
-            margin-bottom: 30px;
+            margin-bottom: 5%;
             opacity: 0.9;
         }
 
         .stats {
             display: flex;
             justify-content: space-around;
-            max-width: 500px;
-            margin: 0 auto;
+            width: 100%;
         }
 
         .stat-box div:first-child {
-            font-size: 2.5rem;
+            font-size: 7vw;
             font-weight: 400;
         }
 
         .stat-label {
-            font-size: 1rem;
+            font-size: 3vw;
             opacity: 0.7;
-            line-height: 1.2;
+            line-height: 1.1;
         }
     </style>
 </head>
@@ -69,20 +73,21 @@
 
     <script>
         function updateCounter() {
-            const startDate = new Date("July 6, 2025 00:00:00").getTime();
-            const now = new Date().getTime();
+            // Target Start Date: July 6, 2025
+            const startDate = new Date("2025-07-06T00:00:00").getTime(); [cite: 13]
+            const now = new Date().getTime(); [cite: 14]
             const distance = now - startDate;
 
-            if (distance > 0) {
-                document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
-                document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000);
+            if (distance > 0) { [cite: 15]
+                document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24)); [cite: 15]
+                document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); [cite: 16]
+                document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)); [cite: 17]
+                document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000); [cite: 18]
             }
         }
 
         setInterval(updateCounter, 1000);
-        updateCounter();
+        updateCounter(); [cite: 19]
     </script>
 </body>
 </html>
