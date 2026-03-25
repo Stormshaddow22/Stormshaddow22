@@ -3,72 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uptime Counter</title>
     <style>
         body {
             margin: 0;
-            padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a; /* Dark background to see white text [cite: 2] */
-            color: white; /* [cite: 3] */
+            padding: 10px;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: transparent; /* Makes it blend with your dashboard wallpaper */
+            color: white; /* Matches your request for white text */
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden; /* [cite: 4] */
+            overflow: hidden;
         }
 
-        .header-text { font-size: 1rem; opacity: 0.8; margin-bottom: 5px; } /* [cite: 5] */
-        .target-date { font-size: 2.5rem; margin: 0; font-weight: bold; } /* [cite: 6] */
-        .sub-date { font-size: 0.9rem; opacity: 0.6; margin-bottom: 20px; } /* [cite: 7] */
-        
-        #days { font-size: 6rem; font-weight: 800; line-height: 1; margin: 10px 0; } /* [cite: 8] */
-        .label { font-size: 1.5rem; opacity: 0.9; margin-bottom: 30px; } /* [cite: 9] */
+        .main-counter {
+            font-size: 8rem; /* Large days display like your reference */
+            font-weight: 600;
+            line-height: 1;
+            margin: 0;
+        }
+
+        .days-label {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
 
         .stats {
             display: flex;
-            justify-content: space-around; /* [cite: 10] */
-            max-width: 400px;
+            justify-content: space-around;
+            max-width: 500px;
             margin: 0 auto;
-            width: 100%;
         }
 
-        .stat-box div:first-child { font-size: 1.8rem; font-weight: bold; } /* [cite: 11] */
-        .stat-label { font-size: 0.8rem; opacity: 0.6; } /* [cite: 12] */
+        .stat-box div:first-child {
+            font-size: 2.5rem;
+            font-weight: 400;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.7;
+            line-height: 1.2;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header-text">How many days since last</div>
-    <div class="target-date">6th July 2025</div>
-    <div class="sub-date">Sunday, 6 July 2025</div>
-
-    <div id="days">0</div>
-    <div class="label">days</div>
+    <div class="main-counter" id="days">0</div>
+    <div class="days-label">days</div>
 
     <div class="stats">
-        <div><div id="hours">0</div><div class="stat-label">hours</div></div>
-        <div><div id="minutes">0</div><div class="stat-label">minutes</div></div>
-        <div><div id="seconds">0</div><div class="stat-label">seconds</div></div>
+        <div class="stat-box">
+            <div id="hours">0</div>
+            <div class="stat-label">hours</div>
+        </div>
+        <div class="stat-box">
+            <div id="minutes">0</div>
+            <div class="stat-label">minutes<br>since</div>
+        </div>
+        <div class="stat-box">
+            <div id="seconds">0</div>
+            <div class="stat-label">seconds</div>
+        </div>
     </div>
 
     <script>
-        function update() {
-            // Target Start Date: July 6, 2025 [cite: 13]
-            const start = new Date("2025-07-06T00:00:00").getTime();
-            const now = new Date().getTime(); /* [cite: 14] */
-            const diff = now - start;
+        function updateCounter() {
+            const startDate = new Date("July 6, 2025 00:00:00").getTime();
+            const now = new Date().getTime();
+            const distance = now - startDate;
 
-            if (diff > 0) { /* [cite: 15] */
-                document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24)); /* [cite: 15] */
-                document.getElementById("hours").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); /* [cite: 16] */
-                document.getElementById("minutes").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); /* [cite: 17] */
-                document.getElementById("seconds").innerText = Math.floor((diff % (1000 * 60)) / 1000); /* [cite: 18] */
+            if (distance > 0) {
+                document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+                document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000);
             }
         }
-        setInterval(update, 1000);
-        update(); /* [cite: 19] */
+
+        setInterval(updateCounter, 1000);
+        updateCounter();
     </script>
 </body>
 </html>
