@@ -9,34 +9,33 @@
             margin: 0;
             padding: 20px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* Dark background so you can see the white text */
-            background-color: #1a1a1a; 
-            color: white;
+            background-color: #1a1a1a; /* Dark background to see white text [cite: 2] */
+            color: white; /* [cite: 3] */
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* [cite: 4] */
         }
 
-        .header-text { font-size: 1rem; opacity: 0.8; margin-bottom: 5px; }
-        .target-date { font-size: 2.5rem; margin: 0; font-weight: bold; }
-        .sub-date { font-size: 0.9rem; opacity: 0.6; margin-bottom: 20px; }
+        .header-text { font-size: 1rem; opacity: 0.8; margin-bottom: 5px; } /* [cite: 5] */
+        .target-date { font-size: 2.5rem; margin: 0; font-weight: bold; } /* [cite: 6] */
+        .sub-date { font-size: 0.9rem; opacity: 0.6; margin-bottom: 20px; } /* [cite: 7] */
         
-        #days { font-size: 6rem; font-weight: 800; line-height: 1; margin: 10px 0; }
-        .label { font-size: 1.5rem; opacity: 0.9; margin-bottom: 30px; }
+        #days { font-size: 6rem; font-weight: 800; line-height: 1; margin: 10px 0; } /* [cite: 8] */
+        .label { font-size: 1.5rem; opacity: 0.9; margin-bottom: 30px; } /* [cite: 9] */
 
         .stats {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-around; /* [cite: 10] */
             max-width: 400px;
             margin: 0 auto;
             width: 100%;
         }
 
-        .stat-box div:first-child { font-size: 1.8rem; font-weight: bold; }
-        .stat-label { font-size: 0.8rem; opacity: 0.6; }
+        .stat-box div:first-child { font-size: 1.8rem; font-weight: bold; } /* [cite: 11] */
+        .stat-label { font-size: 0.8rem; opacity: 0.6; } /* [cite: 12] */
     </style>
 </head>
 <body>
@@ -56,20 +55,20 @@
 
     <script>
         function update() {
-            // Hardcoded Start Date: July 6, 2025
+            // Target Start Date: July 6, 2025 [cite: 13]
             const start = new Date("2025-07-06T00:00:00").getTime();
-            const now = new Date().getTime();
+            const now = new Date().getTime(); /* [cite: 14] */
             const diff = now - start;
 
-            if (diff > 0) {
-                document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
-                document.getElementById("hours").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                document.getElementById("minutes").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                document.getElementById("seconds").innerText = Math.floor((diff % (1000 * 60)) / 1000);
+            if (diff > 0) { /* [cite: 15] */
+                document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24)); /* [cite: 15] */
+                document.getElementById("hours").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); /* [cite: 16] */
+                document.getElementById("minutes").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); /* [cite: 17] */
+                document.getElementById("seconds").innerText = Math.floor((diff % (1000 * 60)) / 1000); /* [cite: 18] */
             }
         }
         setInterval(update, 1000);
-        update();
+        update(); /* [cite: 19] */
     </script>
 </body>
 </html>
