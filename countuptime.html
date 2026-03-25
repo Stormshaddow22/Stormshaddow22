@@ -4,33 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        :root {
+            --bg-color: transparent;
+            --text-color: white;
+            --opacity: 0.9;
+        }
+
+        .light-theme {
+            --bg-color: rgba(255, 255, 255, 0.8);
+            --text-color: #333;
+            --opacity: 1;
+        }
+
         body {
             margin: 0;
-            padding: 5px; /* Minimal padding to save space */
+            padding: 5vh 2vw;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: transparent; 
-            color: white; 
+            background: var(--bg-color); 
+            color: var(--text-color); 
             text-align: center;
-            overflow: hidden; /* Prevents scrollbars in small boxes */
+            overflow: hidden; 
             display: flex;
             flex-direction: column;
             justify-content: center;
-            height: 100vh; /* Centers content vertically */
+            height: 100vh;
+            transition: background 0.3s, color 0.3s;
         }
 
-        /* Responsive font sizes that scale with the width of the iframe */
-        .main-counter {
-            font-size: 25vw; /* Scales with box width */
+        #days {
+            font-size: 25vw; 
             font-weight: 700;
-            line-height: 0.9;
+            line-height: 1;
             margin: 0;
         }
 
-        .days-label {
+        .label {
             font-size: 8vw;
             font-weight: 300;
-            margin-bottom: 5%;
-            opacity: 0.9;
+            margin-bottom: 4vh;
+            opacity: var(--opacity);
         }
 
         .stats {
@@ -49,12 +61,44 @@
             opacity: 0.7;
             line-height: 1.1;
         }
+
+        /* Theme Toggle Button */
+        #theme-btn {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+            transition: background 0.3s;
+        }
+
+        #theme-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        #theme-btn img {
+            width: 100%;
+            height: auto;
+            filter: invert(1); /* Makes the black icon white */
+        }
+
+        .light-theme #theme-btn img {
+            filter: invert(0); /* Keeps icon black in light mode */
+        }
     </style>
 </head>
 <body>
 
-    <div class="main-counter" id="days">0</div>
-    <div class="days-label">days</div>
+    <div id="days">0</div>
+    <div class="label">days</div>
 
     <div class="stats">
         <div class="stat-box">
@@ -71,23 +115,30 @@
         </div>
     </div>
 
-    <script>
-        function updateCounter() {
-            // Target Start Date: July 6, 2025
-            const startDate = new Date("2025-07-06T00:00:00").getTime(); [cite: 13]
-            const now = new Date().getTime(); [cite: 14]
-            const distance = now - startDate;
+    <button id="theme-btn" onclick="toggleTheme()" title="Toggle Light/Dark">
+        <img src="https://cdn-icons-png.flaticon.com/512/10452/10452814.png" alt="Theme Toggle">
+    </button>
 
-            if (distance > 0) { [cite: 15]
-                document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24)); [cite: 15]
-                document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); [cite: 16]
-                document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)); [cite: 17]
-                document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000); [cite: 18]
+    <script>
+        function update() {
+            const start = new Date("2025-07-06T00:00:00").getTime();
+            const now = new Date().getTime();
+            const diff = now - start;
+
+            if (diff > 0) {
+                document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+                document.getElementById("hours").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById("minutes").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById("seconds").innerText = Math.floor((diff % (1000 * 60)) / 1000);
             }
         }
 
-        setInterval(updateCounter, 1000);
-        updateCounter(); [cite: 19]
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+        }
+
+        setInterval(update, 1000);
+        update();
     </script>
 </body>
 </html>
